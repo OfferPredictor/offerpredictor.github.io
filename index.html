@@ -50,14 +50,73 @@
             background-color: #ffeeba;
             border-left: 4px solid #ffc107;
         }
+        /* 新增的语言考试选择样式 */
+        .language-test-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .language-test-group label {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        .language-test-group input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        /* 新增的课程输入样式 */
+        .course-input-group {
+            margin-bottom: 15px;
+        }
+        .course-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .course-input input,
+        .course-input select {
+            width: 150px;
+            margin-right: 10px;
+        }
+        .remove-course {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .remove-course:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
     <h2>美本录取率预测（中国学生版）</h2>
     
     <div class="form-group">
+        <label>语言考试:</label>
+        <div class="language-test-group">
+            <label for="toefl_radio">
+                <input type="radio" id="toefl_radio" name="language_test" value="toefl" checked>
+                托福
+            </label>
+            <label for="ielts_radio">
+                <input type="radio" id="ielts_radio" name="language_test" value="ielts">
+                雅思
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group" id="toefl_group">
         <label for="toefl">托福成绩 (0-120):</label>
         <input type="number" id="toefl" min="0" max="120" required>
+    </div>
+
+    <div class="form-group" id="ielts_group" style="display: none;">
+        <label for="ielts">雅思成绩 (0-9):</label>
+        <input type="number" id="ielts" min="0" max="9" step="0.5" required>
     </div>
 
     <div class="form-group">
@@ -66,12 +125,112 @@
     </div>
 
     <div class="form-group">
+        <label for="curriculum">课程体系:</label>
+        <select id="curriculum" required onchange="updateCourseInputs()">
+            <option value="ap">AP课程</option>
+            <option value="ib">IB课程</option>
+            <option value="a_level">A-Level课程</option>
+            <option value="domestic">国内课程</option>
+            <option value="other">其他国际课程</option>
+        </select>
+    </div>
+
+    <!-- AP课程成绩输入 -->
+    <div id="ap_courses" class="course-input-group">
+        <div class="form-group">
+            <label>AP课程成绩 (1-5):</label>
+            <div class="course-inputs">
+                <div class="course-input">
+                    <input type="number" class="ap-score" min="1" max="5" step="0.5" placeholder="AP成绩">
+                    <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+                </div>
+            </div>
+            <button type="button" onclick="addAPCourse()">添加AP课程</button>
+        </div>
+    </div>
+
+    <!-- IB课程成绩输入 -->
+    <div id="ib_courses" class="course-input-group" style="display: none;">
+        <div class="form-group">
+            <label>IB课程成绩 (1-7):</label>
+            <div class="course-inputs">
+                <div class="course-input">
+                    <input type="number" class="ib-score" min="1" max="7" step="0.5" placeholder="IB成绩">
+                    <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+                </div>
+            </div>
+            <button type="button" onclick="addIBCourse()">添加IB课程</button>
+        </div>
+    </div>
+
+    <!-- A-Level课程成绩输入 -->
+    <div id="a_level_courses" class="course-input-group" style="display: none;">
+        <div class="form-group">
+            <label>A-Level课程成绩 (A*-E):</label>
+            <div class="course-inputs">
+                <div class="course-input">
+                    <select class="a-level-grade">
+                        <option value="A*">A*</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
+                    <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+                </div>
+            </div>
+            <button type="button" onclick="addALevelCourse()">添加A-Level课程</button>
+        </div>
+    </div>
+
+    <!-- 国内课程成绩输入 -->
+    <div id="domestic_courses" class="course-input-group" style="display: none;">
+        <div class="form-group">
+            <label>国内课程成绩 (0-100):</label>
+            <div class="course-inputs">
+                <div class="course-input">
+                    <input type="number" class="domestic-score" min="0" max="100" placeholder="课程成绩">
+                    <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+                </div>
+            </div>
+            <button type="button" onclick="addDomesticCourse()">添加课程</button>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="university">选择大学:</label>
         <select id="university">
+            <option value="princeton">普林斯顿大学</option>
+            <option value="mit">麻省理工学院</option>
             <option value="harvard">哈佛大学</option>
             <option value="stanford">斯坦福大学</option>
-            <option value="mit">麻省理工学院</option>
+            <option value="yale">耶鲁大学</option>
+            <option value="chicago">芝加哥大学</option>
+            <option value="jhu">约翰霍普金斯大学</option>
+            <option value="penn">宾夕法尼亚大学</option>
+            <option value="caltech">加州理工学院</option>
+            <option value="duke">杜克大学</option>
+            <option value="northwestern">西北大学</option>
+            <option value="dartmouth">达特茅斯学院</option>
+            <option value="brown">布朗大学</option>
+            <option value="vanderbilt">范德堡大学</option>
+            <option value="rice">莱斯大学</option>
+            <option value="wustl">圣路易斯华盛顿大学</option>
+            <option value="cornell">康奈尔大学</option>
+            <option value="columbia">哥伦比亚大学</option>
+            <option value="notre_dame">圣母大学</option>
+            <option value="berkeley">加州大学伯克利分校</option>
             <option value="ucla">加州大学洛杉矶分校</option>
+            <option value="cmu">卡内基梅隆大学</option>
+            <option value="emory">埃默里大学</option>
+            <option value="georgetown">乔治城大学</option>
+            <option value="nyu">纽约大学</option>
+            <option value="umich">密歇根大学安娜堡分校</option>
+            <option value="usc">南加州大学</option>
+            <option value="virginia">弗吉尼亚大学</option>
+            <option value="tufts">塔夫茨大学</option>
+            <option value="unc">北卡罗来纳大学教堂山分校</option>
         </select>
     </div>
 
@@ -80,48 +239,589 @@
     <div id="result"></div>
 
     <script>
+        // 添加语言考试切换功能
+        document.getElementById('toefl_radio').addEventListener('change', function() {
+            document.getElementById('toefl_group').style.display = 'block';
+            document.getElementById('ielts_group').style.display = 'none';
+            document.getElementById('toefl').required = true;
+            document.getElementById('ielts').required = false;
+        });
+
+        document.getElementById('ielts_radio').addEventListener('change', function() {
+            document.getElementById('toefl_group').style.display = 'none';
+            document.getElementById('ielts_group').style.display = 'block';
+            document.getElementById('toefl').required = false;
+            document.getElementById('ielts').required = true;
+        });
+
         const totalApplicants = 18000; // 总中国申请人数
         const universityData = {
-            harvard: {
-                admit: 10,
-                minTOEFL: 108,
-                avgTOEFL: 113,
-                minGPA: 3.8,
-                avgGPA: 3.97
-            },
-            stanford: {
-                admit: 46,
-                minTOEFL: 105,
-                avgTOEFL: 111,
-                minGPA: 3.8,
-                avgGPA: 3.96
+            princeton: {
+                admit: 8,
+                minTOEFL: 110,
+                avgTOEFL: 115,
+                minIELTS: 7.5,
+                avgIELTS: 8.0,
+                minGPA: 3.9,
+                avgGPA: 3.98,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
             },
             mit: {
                 admit: 14,
                 minTOEFL: 110,
                 avgTOEFL: 115,
+                minIELTS: 7.5,
+                avgIELTS: 8.0,
                 minGPA: 3.9,
-                avgGPA: 3.98
+                avgGPA: 3.98,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            harvard: {
+                admit: 10,
+                minTOEFL: 108,
+                avgTOEFL: 113,
+                minIELTS: 7.5,
+                avgIELTS: 8.0,
+                minGPA: 3.8,
+                avgGPA: 3.97,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            stanford: {
+                admit: 46,
+                minTOEFL: 105,
+                avgTOEFL: 111,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.96,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            yale: {
+                admit: 12,
+                minTOEFL: 108,
+                avgTOEFL: 113,
+                minIELTS: 7.5,
+                avgIELTS: 8.0,
+                minGPA: 3.8,
+                avgGPA: 3.97,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            chicago: {
+                admit: 25,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            jhu: {
+                admit: 35,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            penn: {
+                admit: 30,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            caltech: {
+                admit: 8,
+                minTOEFL: 110,
+                avgTOEFL: 115,
+                minIELTS: 7.5,
+                avgIELTS: 8.0,
+                minGPA: 3.9,
+                avgGPA: 3.98,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            duke: {
+                admit: 40,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            northwestern: {
+                admit: 45,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            dartmouth: {
+                admit: 15,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            brown: {
+                admit: 35,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            vanderbilt: {
+                admit: 50,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            rice: {
+                admit: 40,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            wustl: {
+                admit: 45,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            cornell: {
+                admit: 60,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            columbia: {
+                admit: 35,
+                minTOEFL: 105,
+                avgTOEFL: 110,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.8,
+                avgGPA: 3.95,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            notre_dame: {
+                admit: 40,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            berkeley: {
+                admit: 200,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
             },
             ucla: {
                 admit: 304,
                 minTOEFL: 95,
                 avgTOEFL: 105,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
                 minGPA: 3.5,
-                avgGPA: 3.85
+                avgGPA: 3.85,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            cmu: {
+                admit: 80,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            emory: {
+                admit: 60,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            georgetown: {
+                admit: 50,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            nyu: {
+                admit: 120,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            umich: {
+                admit: 150,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            usc: {
+                admit: 100,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            virginia: {
+                admit: 80,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            tufts: {
+                admit: 45,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
+            },
+            unc: {
+                admit: 70,
+                minTOEFL: 100,
+                avgTOEFL: 108,
+                minIELTS: 7.0,
+                avgIELTS: 7.5,
+                minGPA: 3.7,
+                avgGPA: 3.9,
+                curriculumWeight: {
+                    ap: 1.0,
+                    ib: 1.0,
+                    a_level: 1.0,
+                    domestic: 0.9,
+                    other: 0.95
+                }
             }
         };
 
+        // 课程输入相关函数
+        function updateCourseInputs() {
+            const curriculum = document.getElementById('curriculum').value;
+            document.querySelectorAll('.course-input-group').forEach(group => {
+                group.style.display = 'none';
+            });
+            document.getElementById(`${curriculum}_courses`).style.display = 'block';
+        }
+
+        function addAPCourse() {
+            const container = document.querySelector('#ap_courses .course-inputs');
+            const div = document.createElement('div');
+            div.className = 'course-input';
+            div.innerHTML = `
+                <input type="number" class="ap-score" min="1" max="5" step="0.5" placeholder="AP成绩">
+                <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addIBCourse() {
+            const container = document.querySelector('#ib_courses .course-inputs');
+            const div = document.createElement('div');
+            div.className = 'course-input';
+            div.innerHTML = `
+                <input type="number" class="ib-score" min="1" max="7" step="0.5" placeholder="IB成绩">
+                <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addALevelCourse() {
+            const container = document.querySelector('#a_level_courses .course-inputs');
+            const div = document.createElement('div');
+            div.className = 'course-input';
+            div.innerHTML = `
+                <select class="a-level-grade">
+                    <option value="A*">A*</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+                <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addDomesticCourse() {
+            const container = document.querySelector('#domestic_courses .course-inputs');
+            const div = document.createElement('div');
+            div.className = 'course-input';
+            div.innerHTML = `
+                <input type="number" class="domestic-score" min="0" max="100" placeholder="课程成绩">
+                <button type="button" class="remove-course" onclick="removeCourse(this)">删除</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeCourse(button) {
+            button.parentElement.remove();
+        }
+
         function calculateProbability() {
             // 获取输入值
+            const languageTest = document.querySelector('input[name="language_test"]:checked').value;
             const toefl = parseInt(document.getElementById('toefl').value);
+            const ielts = parseFloat(document.getElementById('ielts').value);
             const gpa = parseFloat(document.getElementById('gpa').value);
             const university = document.getElementById('university').value;
+            const curriculum = document.getElementById('curriculum').value;
             
             // 验证输入
-            if (!toefl || toefl < 0 || toefl > 120) {
-                alert("请输入有效的托福成绩（0-120）");
-                return;
+            if (languageTest === 'toefl') {
+                if (!toefl || toefl < 0 || toefl > 120) {
+                    alert("请输入有效的托福成绩（0-120）");
+                    return;
+                }
+            } else {
+                if (!ielts || ielts < 0 || ielts > 9) {
+                    alert("请输入有效的雅思成绩（0-9）");
+                    return;
+                }
             }
             if (!gpa || gpa < 0 || gpa > 4.0) {
                 alert("请输入有效的GPA（0-4.0）");
@@ -130,26 +830,44 @@
 
             // 获取大学数据
             const uni = universityData[university];
+            if (!uni) {
+                alert("请选择有效的大学");
+                return;
+            }
             
             // 基础检查：未达最低要求
-            if (toefl < uni.minTOEFL || gpa < uni.minGPA) {
-                showResult(0.01, university, true);
-                return;
+            if (languageTest === 'toefl') {
+                if (toefl < uni.minTOEFL || gpa < uni.minGPA) {
+                    showResult(0.01, university, true);
+                    return;
+                }
+            } else {
+                if (ielts < uni.minIELTS || gpa < uni.minGPA) {
+                    showResult(0.01, university, true);
+                    return;
+                }
             }
 
             // 计算基础录取率
             const baseRate = (uni.admit / totalApplicants) * 100;
 
             // 标准化分数计算
-            const toeflNorm = Math.min(1, 
-                (toefl - uni.minTOEFL) / (uni.avgTOEFL - uni.minTOEFL)
-            );
+            let languageNorm;
+            if (languageTest === 'toefl') {
+                languageNorm = Math.min(1, 
+                    (toefl - uni.minTOEFL) / (uni.avgTOEFL - uni.minTOEFL)
+                );
+            } else {
+                languageNorm = Math.min(1, 
+                    (ielts - uni.minIELTS) / (uni.avgIELTS - uni.minIELTS)
+                );
+            }
             const gpaNorm = Math.min(1, 
                 (gpa - uni.minGPA) / (uni.avgGPA - uni.minGPA)
             );
 
-            // 动态权重调整（托福40% + GPA60%）
-            const scoreRatio = 0.4 * toeflNorm + 0.6 * gpaNorm;
+            // 动态权重调整（语言40% + GPA60%）
+            const scoreRatio = 0.4 * languageNorm + 0.6 * gpaNorm;
 
             // 概率计算模型
             let probability = baseRate * (1 + 3 * scoreRatio);
@@ -159,6 +877,46 @@
             // 竞争系数调整
             const competitionFactor = 1 - (uni.avgGPA - gpa) * 0.3;
             probability *= competitionFactor;
+
+            // 课程体系权重调整
+            const curriculumWeight = uni.curriculumWeight[curriculum];
+            probability *= curriculumWeight;
+
+            // 获取课程成绩
+            let courseScores = [];
+            
+            if (curriculum === 'ap') {
+                document.querySelectorAll('.ap-score').forEach(input => {
+                    if (input.value) courseScores.push(parseFloat(input.value));
+                });
+            } else if (curriculum === 'ib') {
+                document.querySelectorAll('.ib-score').forEach(input => {
+                    if (input.value) courseScores.push(parseFloat(input.value));
+                });
+            } else if (curriculum === 'a_level') {
+                document.querySelectorAll('.a-level-grade').forEach(select => {
+                    const grade = select.value;
+                    const scoreMap = { 'A*': 5, 'A': 4, 'B': 3, 'C': 2, 'D': 1, 'E': 0 };
+                    courseScores.push(scoreMap[grade]);
+                });
+            } else if (curriculum === 'domestic') {
+                document.querySelectorAll('.domestic-score').forEach(input => {
+                    if (input.value) courseScores.push(parseFloat(input.value) / 20); // 转换为0-5分制
+                });
+            }
+
+            // 计算课程成绩的平均分
+            let courseScore = 0;
+            if (courseScores.length > 0) {
+                courseScore = courseScores.reduce((a, b) => a + b, 0) / courseScores.length;
+            }
+
+            // 调整概率计算
+            if (courseScores.length > 0) {
+                const courseWeight = 0.3; // 课程成绩权重
+                const originalWeight = 0.7; // 原有成绩权重
+                probability = probability * originalWeight + (courseScore / 5 * 100) * courseWeight;
+            }
 
             // 最终修正
             probability = Math.min(Math.max(probability, 0.01), 15);
@@ -174,9 +932,13 @@
             const uniName = document.getElementById('university')
                 .options[document.getElementById('university').selectedIndex].text;
             
+            const curriculumName = document.getElementById('curriculum')
+                .options[document.getElementById('curriculum').selectedIndex].text;
+            
             resultDiv.innerHTML = `
                 <h3>预测结果：${probability.toFixed(2)}%</h3>
                 <p>目标学校：${uniName}</p>
+                <p>课程体系：${curriculumName}</p>
                 <p>${getAdmissionAdvice(probability)}</p>
                 ${isWarning ? '<p class="warning">⚠️ 注意：您的成绩未达到该校最低要求</p>' : ''}
                 <p class="warning">⚠️ 提示：实际录取率可能受文书、推荐信、课外活动等因素影响</p>
