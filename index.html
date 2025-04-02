@@ -1,7 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>美国大学录取率预测</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 200px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .good {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .low {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <h2>美国大学录取率预测</h2>
+    
+    <div class="form-group">
+        <label for="toefl">托福成绩 (0-120):</label>
+        <input type="number" id="toefl" min="0" max="120" required>
+    </div>
+
+    <div class="form-group">
+        <label for="gpa">GPA (0-4.0):</label>
+        <input type="number" id="gpa" min="0" max="4" step="0.1" required>
+    </div>
+
+    <div class="form-group">
+        <label for="university">选择大学:</label>
+        <select id="university">
+            <option value="harvard">哈佛大学</option>
+            <option value="stanford">斯坦福大学</option>
+            <option value="mit">麻省理工学院</option>
+            <option value="ucla">加州大学洛杉矶分校</option>
+            <option value="state">普通州立大学</option>
+        </select>
+    </div>
+
+    <button onclick="calculateProbability()">预测录取率</button>
+
+    <div id="result"></div>
+
+    <script>
+        const universityData = {
+            harvard: { minTOEFL: 108, avgGPA: 3.9, competitiveness: 0.95 },
+            stanford: { minTOEFL: 105, avgGPA: 3.8, competitiveness: 0.93 },
+            mit: { minTOEFL: 110, avgGPA: 3.85, competitiveness: 0.94 },
+            ucla: { minTOEFL: 95, avgGPA: 3.7, competitiveness: 0.85 },
+            state: { minTOEFL: 80, avgGPA: 3.0, competitiveness: 0.65 }
+        };
+
+        function calculateProbability() {
+            // 获取输入值
+            const toefl = parseInt(document.getElementById('toefl').value);
+            const gpa = parseFloat(document.getElementById('gpa').value);
+            const university = document.getElementById('university').value;
+            
+            // 验证输入
+            if (!toefl || toefl < 0 || toefl > 120) {
+                alert("请输入有效的托福成绩（0-120）");
+                return;
+            }
+            if (!gpa || gpa < 0 || gpa > 4.0) {
+                alert("请输入有效的GPA（0-4.0）");
+                return;
+            }
+
+            // 获取大学数据
+            const uni = universityData[university];
+            
+            // 计算基础概率
+            let probability = 0;
+            
+            // 托福分数计算（40%权重）
+            const toeflScore = Math.min(1, toefl / uni.minTOEFL) * 40;
+            
+            // GPA计算（40%权重）
+            const gpaScore = Math.min(1, gpa / uni.avgGPA) * 40;
+            
+            // 学校竞争力（20%基础）
+            const baseScore = uni.competitiveness * 20;
+            
+            probability = toeflScore + gpaScore + baseScore;
+            
+            // 确保概率在合理范围
+            probability = Math.min(Math.max(probability, 5), 95);
+
+            // 显示结果
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>预测结果：${Math.round(probability)}%</h3>
+                <p>目标学校：${document.getElementById('university').options[document.getElementById('university').selectedIndex].text}</p>
+                <p>建议：${getAdmissionAdvice(probability)}</p>
+            `;
+            
+            // 设置样式
+            resultDiv.className = '';
+            if (probability > 70) resultDiv.classList.add('good');
+            else if (probability > 40) resultDiv.classList.add('medium');
+            else resultDiv.classList.add('low');
+        }
+
+        function getAdmissionAdvice(prob) {
+            if (prob > 80) return "很有竞争力！建议作为冲刺学校";
+            if (prob > 60) return "具有竞争力，建议重点申请";
+            if (prob > 40) return "有一定机会，建议同时考虑匹配学校";
+            return "建议考虑其他匹配度更高的学校";
+        }
+    </script>
 </body>
 </html>
