@@ -90,6 +90,84 @@
         .remove-course:hover {
             background-color: #c82333;
         }
+        /* 添加历史记录表格样式 */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: #f2f2f2;
+        }
+        .history-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .history-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        #historyButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #historyButton:hover {
+            background-color: #0056b3;
+        }
+        .clear-history {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .clear-history:hover {
+            background-color: #c82333;
+        }
+        /* 添加数据库相关样式 */
+        .db-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .db-button {
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .db-button:hover {
+            background-color: #5a6268;
+        }
+        .export-button {
+            background-color: #28a745;
+        }
+        .export-button:hover {
+            background-color: #218838;
+        }
+        .stats-button {
+            background-color: #17a2b8;
+        }
+        .stats-button:hover {
+            background-color: #138496;
+        }
+        .stats-panel {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -237,6 +315,27 @@
     <button onclick="calculateProbability()">预测录取率</button>
 
     <div id="result"></div>
+
+    <button id="historyButton" onclick="toggleHistory()">查看历史记录</button>
+    <button class="clear-history" onclick="clearHistory()">清除历史记录</button>
+
+    <table class="history-table" id="historyTable">
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>大学</th>
+                <th>语言考试</th>
+                <th>语言成绩</th>
+                <th>GPA</th>
+                <th>课程体系</th>
+                <th>课程数量</th>
+                <th>平均课程成绩</th>
+                <th>预测录取率</th>
+            </tr>
+        </thead>
+        <tbody id="historyBody">
+        </tbody>
+    </table>
 
     <script>
         // 添加语言考试切换功能
@@ -938,6 +1037,20 @@
             // 最终修正
             probability = Math.min(Math.max(probability, 0.01), 20); // 提高上限到20%
 
+            // 在显示结果之前保存数据
+            const predictionData = {
+                university: document.getElementById('university').options[document.getElementById('university').selectedIndex].text,
+                languageTest: languageTest === 'toefl' ? '托福' : '雅思',
+                languageScore: languageTest === 'toefl' ? toefl : ielts,
+                gpa: gpa,
+                curriculum: document.getElementById('curriculum').options[document.getElementById('curriculum').selectedIndex].text,
+                courseCount: courseCount,
+                avgCourseScore: courseScores.length > 0 ? courseScore.toFixed(2) : 'N/A',
+                probability: probability
+            };
+            
+            savePrediction(predictionData);
+
             // 显示结果
             showResult(probability, university);
         }
@@ -972,6 +1085,137 @@
             if (prob > 2) return "需要出色软实力补充（前10%申请者）";
             if (prob > 0.5) return "建议搭配3-5所匹配院校申请";
             return "建议重点考虑匹配度更高的学校";
+        }
+
+        // 添加数据库相关代码
+        let db;
+        const dbName = "AdmissionPredictorDB";
+        const dbVersion = 1;
+        const storeName = "predictions";
+
+        // 初始化数据库
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, dbVersion);
+
+                request.onerror = () => {
+                    console.error("数据库打开失败");
+                    reject(request.error);
+                };
+
+                request.onsuccess = () => {
+                    db = request.result;
+                    console.log("数据库打开成功");
+                    resolve();
+                };
+
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(storeName)) {
+                        const store = db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+                        store.createIndex("university", "university", { unique: false });
+                        store.createIndex("timestamp", "timestamp", { unique: false });
+                    }
+                };
+            });
+        }
+
+        // 保存预测数据到数据库
+        function saveToDB(data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], "readwrite");
+                const store = transaction.objectStore(storeName);
+                const request = store.add({
+                    ...data,
+                    timestamp: new Date().toISOString()
+                });
+
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // 获取所有预测数据
+        function getAllPredictions() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], "readonly");
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // 修改原有的savePrediction函数
+        function savePrediction(data) {
+            // 保存到localStorage（用于即时显示）
+            let history = JSON.parse(localStorage.getItem('predictionHistory') || '[]');
+            history.push({
+                timestamp: new Date().toLocaleString(),
+                ...data
+            });
+            localStorage.setItem('predictionHistory', JSON.stringify(history));
+
+            // 保存到IndexedDB
+            saveToDB(data).catch(error => {
+                console.error("保存到数据库失败:", error);
+            });
+        }
+
+        // 修改loadHistory函数
+        function loadHistory() {
+            getAllPredictions().then(predictions => {
+                const tbody = document.getElementById('historyBody');
+                tbody.innerHTML = '';
+                
+                predictions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .forEach(record => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${new Date(record.timestamp).toLocaleString()}</td>
+                            <td>${record.university}</td>
+                            <td>${record.languageTest}</td>
+                            <td>${record.languageScore}</td>
+                            <td>${record.gpa}</td>
+                            <td>${record.curriculum}</td>
+                            <td>${record.courseCount}</td>
+                            <td>${record.avgCourseScore}</td>
+                            <td>${record.probability.toFixed(2)}%</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+            });
+        }
+
+        // 修改clearHistory函数
+        function clearHistory() {
+            if (confirm('确定要清除所有历史记录吗？')) {
+                // 清除localStorage
+                localStorage.removeItem('predictionHistory');
+                document.getElementById('historyBody').innerHTML = '';
+
+                // 清除IndexedDB
+                const transaction = db.transaction([storeName], "readwrite");
+                const store = transaction.objectStore(storeName);
+                store.clear();
+            }
+        }
+
+        // 初始化数据库
+        initDB().catch(error => {
+            console.error("数据库初始化失败:", error);
+        });
+
+        // 添加历史记录相关函数
+        function toggleHistory() {
+            const table = document.getElementById('historyTable');
+            if (table.style.display === 'none') {
+                loadHistory();
+                table.style.display = 'table';
+            } else {
+                table.style.display = 'none';
+            }
         }
     </script>
 </body>
