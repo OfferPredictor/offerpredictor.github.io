@@ -5,7 +5,8 @@ const app = express();
 
 // 添加详细的日志中间件
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    const beijingTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+    console.log(`[${beijingTime.toISOString()}] ${req.method} ${req.url}`);
     next();
 });
 
@@ -15,11 +16,12 @@ app.use(express.json());
 // 保存预测数据到log.csv
 app.post('/save-prediction', (req, res) => {
     try {
+        const beijingTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
         console.log('Received prediction data:', req.body);
         const prediction = req.body;
         const headers = ["时间戳", "大学名称", "语言考试类型", "语言成绩", "GPA", "课程体系", "课程数量", "平均课程成绩", "预测录取率"];
-        const csvLine = [
-            prediction.timestamp,
+        const csvLine = "\n" + [
+            beijingTime.toISOString(), // 使用北京时间
             prediction.university,
             prediction.languageTest,
             prediction.languageScore,
@@ -28,14 +30,14 @@ app.post('/save-prediction', (req, res) => {
             prediction.courseCount,
             prediction.avgCourseScore,
             prediction.probability.toFixed(2) + "%"
-        ].join(",") + "\n";
+        ].join(",");
 
         console.log('Writing to log.csv:', csvLine);
 
         // 检查文件是否存在，不存在则创建并添加表头
         if (!fs.existsSync('log.csv')) {
             console.log('Creating new log.csv file');
-            fs.writeFileSync('log.csv', headers.join(",") + "\n");
+            fs.writeFileSync('log.csv', headers.join(","));
         }
 
         // 追加新数据
@@ -67,6 +69,7 @@ app.get('/get-predictions', (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
+    const beijingTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
     console.log(`Server is running on port ${PORT}`);
-    console.log('Server started at:', new Date().toISOString());
+    console.log('Server started at:', beijingTime.toISOString());
 }); 

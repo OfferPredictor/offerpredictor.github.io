@@ -181,6 +181,55 @@
         .export-logs:hover {
             background-color: #218838;
         }
+        /* 添加进度条样式 */
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            transition: width 0.5s ease-in-out;
+        }
+        .result-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .result-detail {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .result-value {
+            color: #333;
+        }
+        .result-advice {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+            background-color: #e3f2fd;
+        }
+        /* 添加预测录取率的特殊样式 */
+        .prediction-rate {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196F3;
+        }
     </style>
 </head>
 <body>
@@ -948,6 +997,27 @@
             const gpa = parseFloat(document.getElementById('gpa').value);
             const curriculum = document.getElementById('curriculum').value;
 
+            // 验证输入
+            if (!university) {
+                alert('请选择大学');
+                return;
+            }
+
+            if (languageTest === 'toefl' && (isNaN(languageScore) || languageScore < 0 || languageScore > 120)) {
+                alert('请输入有效的托福成绩（0-120）');
+                return;
+            }
+
+            if (languageTest === 'ielts' && (isNaN(languageScore) || languageScore < 0 || languageScore > 9)) {
+                alert('请输入有效的雅思成绩（0-9）');
+                return;
+            }
+
+            if (isNaN(gpa) || gpa < 0 || gpa > 4.0) {
+                alert('请输入有效的GPA（0-4.0）');
+                return;
+            }
+
             // 获取大学数据
             const selectedUniversity = universityData[university];
             if (!selectedUniversity) {
@@ -1004,14 +1074,18 @@
             } else if (curriculum === 'domestic') {
                 document.querySelectorAll('.domestic-score').forEach(input => {
                     if (input.value) {
-                        totalScore += parseFloat(input.value) / 20; // 转换为5分制
+                        const score = parseFloat(input.value);
+                        // 将100分制转换为5分制
+                        const convertedScore = (score / 100) * 5;
+                        totalScore += convertedScore;
                         validScores++;
                     }
                 });
                 courseCount = document.querySelectorAll('.domestic-score').length;
             }
 
-            const avgCourseScore = validScores > 0 ? totalScore / validScores : 0;
+            // 如果没有有效课程成绩，使用默认值
+            const avgCourseScore = validScores > 0 ? totalScore / validScores : 3.0; // 默认使用3.0
             courseScoreImpact = avgCourseScore / 5; // 转换为0-1范围
 
             // 计算课程数量加成
@@ -1027,19 +1101,11 @@
             ) * 100;
 
             // 显示结果
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <h3>预测结果</h3>
-                <p>预测录取率: ${Math.min(probability, 20).toFixed(2)}%</p>
-                <p>基础录取率: ${(baseRate * 100).toFixed(2)}%</p>
-                <p>语言成绩影响: ${(normalizedLanguageScore * 100).toFixed(2)}%</p>
-                <p>GPA影响: ${(normalizedGPAAdjusted * 100).toFixed(2)}%</p>
-                <p>课程成绩影响: ${(courseScoreImpact * 100).toFixed(2)}%</p>
-            `;
+            showResult(probability, university, baseRate);
 
             // 保存预测数据
             const predictionData = {
-                timestamp: new Date().toISOString(),
+                timestamp: new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString(), // 转换为北京时间
                 university: document.getElementById('university').options[document.getElementById('university').selectedIndex].text,
                 languageTest: languageTest === 'toefl' ? '托福' : '雅思',
                 languageScore: languageScore,
@@ -1053,22 +1119,33 @@
             appendToLog(predictionData);
         }
 
-        function showResult(probability, university) {
+        function showResult(probability, university, baseRate) {
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
             
             const uniName = document.getElementById('university')
                 .options[document.getElementById('university').selectedIndex].text;
             
-            const curriculumName = document.getElementById('curriculum')
-                .options[document.getElementById('curriculum').selectedIndex].text;
-            
             resultDiv.innerHTML = `
-                <h3>预测结果：${probability.toFixed(2)}%</h3>
-                <p>目标学校：${uniName}</p>
-                <p>课程体系：${curriculumName}</p>
-                <p>${getAdmissionAdvice(probability)}</p>
-                <p class="warning">⚠️ 提示：实际录取率可能受文书、推荐信、课外活动等因素影响</p>
+                <div class="result-card">
+                    <div class="result-detail">
+                        <span class="result-label">预测录取率：</span>
+                        <span class="result-value prediction-rate">${probability.toFixed(2)}%</span>
+                    </div>
+                    
+                    <div class="result-detail">
+                        <span class="result-label">目标学校：</span>
+                        <span class="result-value">${uniName}</span>
+                    </div>
+                    
+                    <div class="result-advice">
+                        <strong>建议：</strong> ${getAdmissionAdvice(probability)}
+                    </div>
+                    
+                    <div class="result-detail warning">
+                        <strong>⚠️ 提示：</strong> 实际录取率可能受文书、推荐信、课外活动等因素影响
+                    </div>
+                </div>
             `;
 
             // 设置样式
