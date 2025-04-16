@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>美本申请规划方案</title>
-    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
-    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,21 +24,79 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        .gantt_container {
-            height: 500px;
+        .gantt-container {
             width: 100%;
+            margin-bottom: 20px;
         }
-        .gantt_task_line.waiting {
+        .gantt-year {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .gantt-header {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+        .gantt-header-cell {
+            padding: 10px;
+            text-align: center;
+            width: 8.33%;  /* 100% / 12个月 */
+            border-right: 1px solid #ddd;
+            box-sizing: border-box;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gantt-body {
+            display: flex;
+            flex-direction: column;
+        }
+        .gantt-row {
+            display: flex;
+            height: 40px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+        .gantt-row-bars {
+            flex: 1;
+            position: relative;
+            height: 40px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .gantt-bar {
+            position: absolute;
+            height: 20px;
+            top: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            padding: 0 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gantt-bar.category-general {
             background-color: #FFA500;
-            border-color: #FF8C00;
         }
-        .gantt_task_line.ongoing {
-            background-color: #4CAF50;
-            border-color: #388E3C;
+        .gantt-bar.category-test {
+            background-color: #9C27B0;
         }
-        .gantt_task_line.completed {
-            background-color: #2196F3;
-            border-color: #1976D2;
+        .gantt-bar.category-activity {
+            background-color: #FF5722;
+        }
+        .gantt-bar.category-competition {
+            background-color: #E91E63;
+        }
+        .gantt-bar.category-summer {
+            background-color: #009688;
         }
         .controls {
             margin: 20px 0;
@@ -66,6 +123,23 @@
         .status-waiting { background-color: #FFA500; }
         .status-ongoing { background-color: #4CAF50; }
         .status-completed { background-color: #2196F3; }
+        .category-legend {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .category-item {
+            display: inline-block;
+            padding: 4px 8px;
+            color: white;
+            border-radius: 3px;
+        }
+        .category-general { background-color: #FFA500; }
+        .category-test { background-color: #9C27B0; }
+        .category-activity { background-color: #FF5722; }
+        .category-competition { background-color: #E91E63; }
+        .category-summer { background-color: #009688; }
     </style>
 </head>
 <body>
@@ -74,83 +148,197 @@
         <div class="controls">
             <button onclick="addTask()">添加事项</button>
             <button onclick="removeTask()">删除事项</button>
-            <div class="status-legend">
-                <span class="status-item status-waiting">待办事项</span>
-                <span class="status-item status-ongoing">进行中</span>
-                <span class="status-item status-completed">已完成</span>
+            <button onclick="exportToPDF()">导出PDF</button>
+            <div class="category-legend">
+                <span class="category-item category-general">待办事项</span>
+                <span class="category-item category-test">标化成绩</span>
+                <span class="category-item category-activity">课外活动</span>
+                <span class="category-item category-competition">竞赛</span>
+                <span class="category-item category-summer">夏校</span>
             </div>
         </div>
-        <div id="gantt_here" class="gantt_container"></div>
+        <div id="gantt_2024" class="gantt-container"></div>
+        <div id="gantt_2025" class="gantt-container"></div>
+        <div id="gantt_2026" class="gantt-container"></div>
         <div style="margin-top: 20px;">
             <a href="index.html" style="color: #666; text-decoration: none;">返回首页</a>
         </div>
     </div>
 
     <script>
+        const tasks2024 = [
+            {id: 1, text: "托福考试", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting", category: "test"},
+            {id: 2, text: "SAT考试", start_date: "2024-04-01", end_date: "2024-06-30", status: "waiting", category: "test"},
+            {id: 3, text: "准备申请材料", start_date: "2024-07-01", end_date: "2024-08-31", status: "waiting", category: "general"},
+            {id: 4, text: "撰写文书", start_date: "2024-09-01", end_date: "2024-10-31", status: "waiting", category: "general"},
+            {id: 5, text: "提交申请", start_date: "2024-11-01", end_date: "2024-12-31", status: "waiting", category: "general"}
+        ];
+
+        const tasks2025 = [
+            {id: 1, text: "等待录取结果", start_date: "2025-01-01", end_date: "2025-03-31", status: "waiting", category: "general"},
+            {id: 2, text: "选择学校", start_date: "2025-04-01", end_date: "2025-04-30", status: "waiting", category: "general"},
+            {id: 3, text: "准备签证材料", start_date: "2025-05-01", end_date: "2025-06-30", status: "waiting", category: "general"},
+            {id: 4, text: "办理签证", start_date: "2025-07-01", end_date: "2025-07-31", status: "waiting", category: "general"},
+            {id: 5, text: "准备入学", start_date: "2025-08-01", end_date: "2025-08-31", status: "waiting", category: "general"}
+        ];
+
+        const tasks2026 = [
+            {id: 1, text: "入学准备", start_date: "2026-01-01", end_date: "2026-03-31", status: "waiting", category: "general"},
+            {id: 2, text: "签证续签", start_date: "2026-04-01", end_date: "2026-05-31", status: "waiting", category: "general"},
+            {id: 3, text: "暑期实习", start_date: "2026-06-01", end_date: "2026-08-31", status: "waiting", category: "activity"},
+            {id: 4, text: "选课规划", start_date: "2026-09-01", end_date: "2026-10-31", status: "waiting", category: "general"},
+            {id: 5, text: "学术规划", start_date: "2026-11-01", end_date: "2026-12-31", status: "waiting", category: "general"}
+        ];
+
         document.addEventListener('DOMContentLoaded', function() {
-            // 基础配置
-            gantt.config.date_format = "%Y-%m-%d";
-            gantt.config.scale_height = 50;
-            gantt.config.row_height = 30;
-            gantt.config.task_height = 20;
-            gantt.config.grid_width = 300;
-
-            // 设置时间刻度
-            gantt.config.scales = [
-                {unit: "year", step: 1, format: "%Y"},
-                {unit: "month", step: 1, format: "%M"}
-            ];
-
-            // 设置月份名称
-            gantt.locale.labels.month_short = [
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ];
-
-            // 设置时间范围
-            gantt.config.start_date = new Date(2024, 0, 1);
-            gantt.config.end_date = new Date(2024, 11, 31);
-
-            // 设置列
-            gantt.config.columns = [
-                {name: "text", label: "计划事项", tree: true, width: 200},
-                {name: "start_date", label: "开始时间", align: "center", width: 100},
-                {name: "end_date", label: "结束时间", align: "center", width: 100}
-            ];
-
-            // 任务样式
-            gantt.templates.task_class = function(start, end, task) {
-                return task.status || "waiting";
-            };
-
-            // 初始化
-            gantt.init("gantt_here");
-
-            // 加载数据
-            var tasks = {
-                data: [
-                    {id: 1, text: "托福考试", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting"},
-                    {id: 2, text: "SAT考试", start_date: "2024-04-01", end_date: "2024-06-30", status: "waiting"},
-                    {id: 3, text: "准备申请", start_date: "2024-07-01", end_date: "2024-12-31", status: "waiting"}
-                ]
-            };
-            gantt.parse(tasks);
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
         });
 
-        // 添加任务
+        function renderGantt(year, tasks) {
+            const container = document.getElementById(`gantt_${year}`);
+            container.innerHTML = '';
+
+            // 添加年份标题
+            const yearTitle = document.createElement('div');
+            yearTitle.className = 'gantt-year';
+            yearTitle.textContent = `${year}年`;
+            container.appendChild(yearTitle);
+
+            // 创建表头
+            const header = document.createElement('div');
+            header.className = 'gantt-header';
+
+            // 添加月份列
+            for (let i = 0; i < 12; i++) {
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'gantt-header-cell';
+                monthHeader.textContent = new Date(year, i).toLocaleString('en-US', { month: 'short' });
+                header.appendChild(monthHeader);
+            }
+
+            container.appendChild(header);
+
+            // 创建任务行
+            const body = document.createElement('div');
+            body.className = 'gantt-body';
+
+            tasks.forEach(task => {
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                row.dataset.taskId = task.id;
+
+                // 添加任务条
+                const bars = document.createElement('div');
+                bars.className = 'gantt-row-bars';
+                
+                const startDate = new Date(task.start_date);
+                const endDate = new Date(task.end_date);
+                const startMonth = startDate.getMonth();
+                const endMonth = endDate.getMonth();
+                const startDay = startDate.getDate();
+                const endDay = endDate.getDate();
+
+                const bar = document.createElement('div');
+                bar.className = `gantt-bar category-${task.category}`;
+                bar.style.left = `${(startMonth + startDay / 31) * 8.33}%`;
+                bar.style.width = `${(endMonth - startMonth + (endDay - startDay) / 31) * 8.33}%`;
+                bar.textContent = task.text;
+                bar.title = `${task.text} (${task.start_date} 至 ${task.end_date})`;
+                
+                // 双击编辑任务
+                bar.addEventListener('dblclick', function() {
+                    editTask(task, year);
+                });
+
+                bars.appendChild(bar);
+                row.appendChild(bars);
+                body.appendChild(row);
+            });
+
+            container.appendChild(body);
+        }
+
+        function editTask(task, year) {
+            // 编辑名称
+            const newText = prompt("请输入新的任务名称：", task.text);
+            if (newText === null) return;
+            task.text = newText;
+
+            // 编辑类别
+            const categoryMap = {
+                '1': 'general',
+                '2': 'test',
+                '3': 'activity',
+                '4': 'competition',
+                '5': 'summer'
+            };
+            const categoryNames = {
+                '1': '待办事项',
+                '2': '标化成绩',
+                '3': '课外活动',
+                '4': '竞赛',
+                '5': '夏校'
+            };
+            
+            const currentCategory = Object.keys(categoryMap).find(key => categoryMap[key] === task.category);
+            const categoryPrompt = `请选择新的任务类别：\n${Object.entries(categoryNames).map(([key, name]) => `${key}-${name}`).join('\n')}`;
+            const newCategory = prompt(categoryPrompt, currentCategory);
+            if (newCategory && ['1', '2', '3', '4', '5'].includes(newCategory)) {
+                task.category = categoryMap[newCategory];
+            }
+
+            // 编辑时间
+            const newStartDate = prompt("请输入新的开始时间（格式：YYYY-MM-DD）：", task.start_date);
+            if (newStartDate && isValidDate(newStartDate)) {
+                task.start_date = newStartDate;
+            }
+
+            const newEndDate = prompt("请输入新的结束时间（格式：YYYY-MM-DD）：", task.end_date);
+            if (newEndDate && isValidDate(newEndDate)) {
+                task.end_date = newEndDate;
+            }
+
+            // 验证日期
+            if (new Date(task.end_date) < new Date(task.start_date)) {
+                alert("结束日期不能早于开始日期");
+                return;
+            }
+
+            // 重新渲染甘特图
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
+        }
+
         function addTask() {
             const taskText = prompt("请输入计划事项名称：");
             if (!taskText) return;
 
-            const startDate = prompt("请输入开始时间（2024年的日期，格式：YYYY-MM-DD）：");
-            if (!startDate || !isValidDate(startDate) || new Date(startDate).getFullYear() !== 2024) {
-                alert("请输入2024年的有效日期（YYYY-MM-DD格式）");
+            const category = prompt("请选择事项类别（1-待办事项，2-标化成绩，3-课外活动，4-竞赛，5-夏校）：");
+            if (!category || !['1', '2', '3', '4', '5'].includes(category)) {
+                alert("请选择有效的类别（1-5）");
                 return;
             }
 
-            const endDate = prompt("请输入结束时间（2024年的日期，格式：YYYY-MM-DD）：");
-            if (!endDate || !isValidDate(endDate) || new Date(endDate).getFullYear() !== 2024) {
-                alert("请输入2024年的有效日期（YYYY-MM-DD格式）");
+            const categoryMap = {
+                '1': 'general',
+                '2': 'test',
+                '3': 'activity',
+                '4': 'competition',
+                '5': 'summer'
+            };
+
+            const startDate = prompt("请输入开始时间（格式：YYYY-MM-DD）：");
+            if (!startDate || !isValidDate(startDate)) {
+                alert("请输入有效的日期（YYYY-MM-DD格式）");
+                return;
+            }
+
+            const endDate = prompt("请输入结束时间（格式：YYYY-MM-DD）：");
+            if (!endDate || !isValidDate(endDate)) {
+                alert("请输入有效的日期（YYYY-MM-DD格式）");
                 return;
             }
 
@@ -159,43 +347,121 @@
                 return;
             }
 
-            const newId = gantt.getTaskByTime().reduce((max, task) => Math.max(max, task.id), 0) + 1;
-            gantt.addTask({
+            const startYear = new Date(startDate).getFullYear();
+            const endYear = new Date(endDate).getFullYear();
+            
+            if (startYear !== endYear) {
+                let currentYear = startYear;
+                let currentStartDate = startDate;
+                
+                while (currentYear <= endYear) {
+                    const yearEndDate = currentYear === endYear ? endDate : `${currentYear}-12-31`;
+                    const newId = Math.max(...tasks2024.map(task => task.id), ...tasks2025.map(task => task.id), ...tasks2026.map(task => task.id)) + 1;
+                    
+                    const task = {
+                        id: newId,
+                        text: taskText,
+                        start_date: currentStartDate,
+                        end_date: yearEndDate,
+                        status: "waiting",
+                        category: categoryMap[category]
+                    };
+
+                    if (currentYear === 2024) {
+                        tasks2024.push(task);
+                    } else if (currentYear === 2025) {
+                        tasks2025.push(task);
+                    } else if (currentYear === 2026) {
+                        tasks2026.push(task);
+                    }
+
+                    currentYear++;
+                    currentStartDate = `${currentYear}-01-01`;
+                }
+            } else {
+                const newId = Math.max(...tasks2024.map(task => task.id), ...tasks2025.map(task => task.id), ...tasks2026.map(task => task.id)) + 1;
+                const task = {
+                    id: newId,
+                    text: taskText,
+                    start_date: startDate,
+                    end_date: endDate,
+                    status: "waiting",
+                    category: categoryMap[category]
+                };
+
+                if (startYear === 2024) {
+                    tasks2024.push(task);
+                } else if (startYear === 2025) {
+                    tasks2025.push(task);
+                } else if (startYear === 2026) {
+                    tasks2026.push(task);
+                }
+            }
+
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
+        }
+
+        function removeTask() {
+            const taskId = prompt("请输入要删除的事项ID：");
+            if (!taskId) return;
+
+            const index = tasks2024.findIndex(task => task.id === parseInt(taskId));
+            if (index !== -1) {
+                tasks2024.splice(index, 1);
+                renderGantt(2024, tasks2024);
+            } else {
+                alert("未找到对应的事项");
+            }
+        }
+
+        function addTask2025() {
+            const taskText = prompt("请输入计划事项名称：");
+            if (!taskText) return;
+
+            const startDate = prompt("请输入开始时间（2025年的日期，格式：YYYY-MM-DD）：");
+            if (!startDate || !isValidDate(startDate) || new Date(startDate).getFullYear() !== 2025) {
+                alert("请输入2025年的有效日期（YYYY-MM-DD格式）");
+                return;
+            }
+
+            const endDate = prompt("请输入结束时间（2025年的日期，格式：YYYY-MM-DD）：");
+            if (!endDate || !isValidDate(endDate) || new Date(endDate).getFullYear() !== 2025) {
+                alert("请输入2025年的有效日期（YYYY-MM-DD格式）");
+                return;
+            }
+
+            if (new Date(endDate) < new Date(startDate)) {
+                alert("结束日期不能早于开始日期");
+                return;
+            }
+
+            const newId = Math.max(...tasks2025.map(task => task.id)) + 1;
+            tasks2025.push({
                 id: newId,
                 text: taskText,
                 start_date: startDate,
                 end_date: endDate,
                 status: "waiting"
             });
+
+            renderGantt(2025, tasks2025);
         }
 
-        // 删除任务
-        function removeTask() {
-            const selectedId = gantt.getSelectedId();
-            if (selectedId) {
-                if (confirm("确定要删除这个计划事项吗？")) {
-                    gantt.deleteTask(selectedId);
-                }
+        function removeTask2025() {
+            const taskId = prompt("请输入要删除的事项ID：");
+            if (!taskId) return;
+
+            const index = tasks2025.findIndex(task => task.id === parseInt(taskId));
+            if (index !== -1) {
+                tasks2025.splice(index, 1);
+                renderGantt(2025, tasks2025);
             } else {
-                alert("请先选择要删除的计划事项");
+                alert("未找到对应的事项");
             }
         }
 
-        // 双击任务切换状态
-        gantt.attachEvent("onTaskDblClick", function(id, e) {
-            const task = gantt.getTask(id);
-            if (task.status === "waiting") {
-                task.status = "ongoing";
-            } else if (task.status === "ongoing") {
-                task.status = "completed";
-            } else {
-                task.status = "waiting";
-            }
-            gantt.updateTask(id);
-            return true;
-        });
-
-        // 验证日期
         function isValidDate(dateString) {
             const regex = /^\d{4}-\d{2}-\d{2}$/;
             if (!regex.test(dateString)) return false;
@@ -206,7 +472,39 @@
             const [year, month, day] = dateString.split('-').map(Number);
             return month >= 1 && month <= 12 && day >= 1 && day <= 31;
         }
+
+        function exportToPDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: '美本申请规划方案.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // 显示导出提示
+            const exportButton = document.querySelector('button[onclick="exportToPDF()"]');
+            const originalText = exportButton.textContent;
+            exportButton.textContent = '正在导出...';
+            exportButton.disabled = true;
+
+            // 导出PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                // 恢复按钮状态
+                exportButton.textContent = originalText;
+                exportButton.disabled = false;
+            }).catch(err => {
+                console.error('导出PDF失败:', err);
+                alert('导出PDF失败，请重试');
+                exportButton.textContent = originalText;
+                exportButton.disabled = false;
+            });
+        }
     </script>
 </body>
-</html> 
 </html> 
