@@ -1133,17 +1133,15 @@
                 return;
             }
 
-            const startYear = new Date(startDate).getFullYear();
-            const endYear = new Date(endDate).getFullYear();
-
             // 找到并更新任务
             let taskArray;
-            if (startYear === 2024) taskArray = tasks2024;
-            else if (startYear === 2025) taskArray = tasks2025;
-            else if (startYear === 2026) taskArray = tasks2026;
+            if (year === 2024) taskArray = tasks2024;
+            else if (year === 2025) taskArray = tasks2025;
+            else if (year === 2026) taskArray = tasks2026;
 
             const taskIndex = taskArray.findIndex(t => t.id === taskId);
             if (taskIndex !== -1) {
+                // 更新现有任务
                 taskArray[taskIndex] = {
                     ...taskArray[taskIndex],
                     text: taskName,
@@ -1153,44 +1151,52 @@
                     description: description,
                     reason: reason
                 };
-            }
 
-            // 更新对应的描述卡片
-            const cardId = `card-${taskId}-${year}`;
-            const card = document.getElementById(cardId);
-            if (card) {
-                card.querySelector('h2').textContent = taskName;
-                
-                // 格式化时间显示
-                const startMonth = new Date(startDate).getMonth() + 1;
-                const endMonth = new Date(endDate).getMonth() + 1;
-                const timeArrangement = `${startYear}年${startMonth}月至${endMonth}月`;
-                
-                card.querySelector('p:nth-child(2)').innerHTML = `<span class="highlight">时间安排：</span>${timeArrangement}`;
-                
-                // 更新描述和规划理由
-                let descriptionP = card.querySelector('p:nth-child(4)');
-                let reasonP = card.querySelector('p:nth-child(5)');
-                
-                if (!descriptionP || !descriptionP.querySelector('.highlight') || descriptionP.querySelector('.highlight').textContent !== '描述：') {
-                    descriptionP = document.createElement('p');
+                // 更新对应的描述卡片
+                const cardId = `card-${taskId}-${year}`;
+                const card = document.getElementById(cardId);
+                if (card) {
+                    // 更新标题和类别
+                    const titleCategory = card.querySelector('.title-category');
+                    titleCategory.innerHTML = `
+                        <h2>${taskName}</h2>
+                        <span class="category-tag">${getCategoryName(taskCategory)}</span>
+                    `;
+
+                    // 更新时间
+                    const timeRow = card.querySelector('.time-row');
+                    timeRow.innerHTML = `
+                        <div class="time-item">
+                            <p><span class="highlight">开始时间：</span>${formatDate(startDate)}</p>
+                        </div>
+                        <div class="time-item">
+                            <p><span class="highlight">结束时间：</span>${formatDate(endDate)}</p>
+                        </div>
+                    `;
+
+                    // 清除所有现有的描述和规划理由段落
+                    const paragraphs = card.querySelectorAll('p');
+                    paragraphs.forEach(p => {
+                        if (p.querySelector('.highlight') && 
+                            (p.querySelector('.highlight').textContent === '描述：' || 
+                             p.querySelector('.highlight').textContent === '规划理由：')) {
+                            p.remove();
+                        }
+                    });
+
+                    // 添加新的描述和规划理由
+                    const descriptionP = document.createElement('p');
                     descriptionP.innerHTML = `<span class="highlight">描述：</span>${description || ''}`;
-                    card.insertBefore(descriptionP, card.querySelector('p:nth-child(4)'));
-                } else {
-                    descriptionP.innerHTML = `<span class="highlight">描述：</span>${description || ''}`;
-                }
-                
-                if (!reasonP || !reasonP.querySelector('.highlight') || reasonP.querySelector('.highlight').textContent !== '规划理由：') {
-                    reasonP = document.createElement('p');
+                    card.appendChild(descriptionP);
+
+                    const reasonP = document.createElement('p');
                     reasonP.innerHTML = `<span class="highlight">规划理由：</span>${reason || ''}`;
-                    card.insertBefore(reasonP, descriptionP.nextSibling);
-                } else {
-                    reasonP.innerHTML = `<span class="highlight">规划理由：</span>${reason || ''}`;
+                    card.appendChild(reasonP);
+
+                    // 移除高亮边框
+                    card.style.border = '';
+                    card.style.boxShadow = '';
                 }
-                
-                // 移除高亮边框
-                card.style.border = '';
-                card.style.boxShadow = '';
             }
 
             // 重新渲染所有甘特图
@@ -1199,6 +1205,24 @@
             renderGantt(2026, tasks2026);
 
             closeEditPanel();
+        }
+        
+        // 辅助函数：获取类别名称
+        function getCategoryName(category) {
+            const categoryNames = {
+                'general': '待办事项',
+                'test': '标化成绩',
+                'activity': '课外活动',
+                'competition': '竞赛',
+                'summer': '夏校'
+            };
+            return categoryNames[category] || category;
+        }
+        
+        // 辅助函数：格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
         }
         
         function saveTaskDescription(taskId, year, cardId) {
