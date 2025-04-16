@@ -140,6 +140,67 @@
         .category-activity { background-color: #FF5722; }
         .category-competition { background-color: #E91E63; }
         .category-summer { background-color: #009688; }
+        .edit-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 400px;
+        }
+        .edit-panel h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .edit-panel label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #666;
+        }
+        .edit-panel input, .edit-panel select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .edit-panel-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .edit-panel-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .edit-panel-buttons .save {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .edit-panel-buttons .cancel {
+            background-color: #f44336;
+            color: white;
+        }
+        .edit-panel-buttons .delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -147,7 +208,6 @@
         <h1>美本申请规划方案</h1>
         <div class="controls">
             <button onclick="addTask()">添加事项</button>
-            <button onclick="removeTask()">删除事项</button>
             <button onclick="exportToPDF()">导出PDF</button>
             <div class="category-legend">
                 <span class="category-item category-general">待办事项</span>
@@ -167,27 +227,32 @@
 
     <script>
         const tasks2024 = [
-            {id: 1, text: "托福考试", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting", category: "test"},
-            {id: 2, text: "SAT考试", start_date: "2024-04-01", end_date: "2024-06-30", status: "waiting", category: "test"},
-            {id: 3, text: "准备申请材料", start_date: "2024-07-01", end_date: "2024-08-31", status: "waiting", category: "general"},
-            {id: 4, text: "撰写文书", start_date: "2024-09-01", end_date: "2024-10-31", status: "waiting", category: "general"},
-            {id: 5, text: "提交申请", start_date: "2024-11-01", end_date: "2024-12-31", status: "waiting", category: "general"}
+            {id: 1, text: "托福首考", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting", category: "test"},
+            {id: 2, text: "AP课程学习", start_date: "2024-04-01", end_date: "2024-05-31", status: "waiting", category: "general"},
+            {id: 3, text: "AP考试", start_date: "2024-05-01", end_date: "2024-05-31", status: "waiting", category: "test"},
+            {id: 4, text: "暑期夏校申请", start_date: "2024-06-01", end_date: "2024-06-30", status: "waiting", category: "summer"},
+            {id: 5, text: "暑期夏校", start_date: "2024-07-01", end_date: "2024-08-31", status: "waiting", category: "summer"},
+            {id: 6, text: "托福二考", start_date: "2024-09-01", end_date: "2024-10-31", status: "waiting", category: "test"},
+            {id: 7, text: "课外活动规划", start_date: "2024-11-01", end_date: "2024-12-31", status: "waiting", category: "activity"}
         ];
 
         const tasks2025 = [
-            {id: 1, text: "等待录取结果", start_date: "2025-01-01", end_date: "2025-03-31", status: "waiting", category: "general"},
-            {id: 2, text: "选择学校", start_date: "2025-04-01", end_date: "2025-04-30", status: "waiting", category: "general"},
-            {id: 3, text: "准备签证材料", start_date: "2025-05-01", end_date: "2025-06-30", status: "waiting", category: "general"},
-            {id: 4, text: "办理签证", start_date: "2025-07-01", end_date: "2025-07-31", status: "waiting", category: "general"},
-            {id: 5, text: "准备入学", start_date: "2025-08-01", end_date: "2025-08-31", status: "waiting", category: "general"}
+            {id: 1, text: "SAT首考", start_date: "2025-01-01", end_date: "2025-03-31", status: "waiting", category: "test"},
+            {id: 2, text: "AP课程学习", start_date: "2025-04-01", end_date: "2025-05-31", status: "waiting", category: "general"},
+            {id: 3, text: "AP考试", start_date: "2025-05-01", end_date: "2025-05-31", status: "waiting", category: "test"},
+            {id: 4, text: "暑期夏校申请", start_date: "2025-06-01", end_date: "2025-06-30", status: "waiting", category: "summer"},
+            {id: 5, text: "暑期夏校", start_date: "2025-07-01", end_date: "2025-08-31", status: "waiting", category: "summer"},
+            {id: 6, text: "SAT二考", start_date: "2025-09-01", end_date: "2025-10-31", status: "waiting", category: "test"},
+            {id: 7, text: "课外活动深化", start_date: "2025-11-01", end_date: "2025-12-31", status: "waiting", category: "activity"}
         ];
 
         const tasks2026 = [
-            {id: 1, text: "入学准备", start_date: "2026-01-01", end_date: "2026-03-31", status: "waiting", category: "general"},
-            {id: 2, text: "签证续签", start_date: "2026-04-01", end_date: "2026-05-31", status: "waiting", category: "general"},
-            {id: 3, text: "暑期实习", start_date: "2026-06-01", end_date: "2026-08-31", status: "waiting", category: "activity"},
-            {id: 4, text: "选课规划", start_date: "2026-09-01", end_date: "2026-10-31", status: "waiting", category: "general"},
-            {id: 5, text: "学术规划", start_date: "2026-11-01", end_date: "2026-12-31", status: "waiting", category: "general"}
+            {id: 1, text: "托福三考", start_date: "2026-01-01", end_date: "2026-03-31", status: "waiting", category: "test"},
+            {id: 2, text: "AP课程学习", start_date: "2026-04-01", end_date: "2026-05-31", status: "waiting", category: "general"},
+            {id: 3, text: "AP考试", start_date: "2026-05-01", end_date: "2026-05-31", status: "waiting", category: "test"},
+            {id: 4, text: "大学申请准备", start_date: "2026-06-01", end_date: "2026-08-31", status: "waiting", category: "general"},
+            {id: 5, text: "文书写作", start_date: "2026-09-01", end_date: "2026-10-31", status: "waiting", category: "general"},
+            {id: 6, text: "提交申请", start_date: "2026-11-01", end_date: "2026-12-31", status: "waiting", category: "general"}
         ];
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -261,55 +326,117 @@
         }
 
         function editTask(task, year) {
-            // 编辑名称
-            const newText = prompt("请输入新的任务名称：", task.text);
-            if (newText === null) return;
-            task.text = newText;
-
-            // 编辑类别
-            const categoryMap = {
-                '1': 'general',
-                '2': 'test',
-                '3': 'activity',
-                '4': 'competition',
-                '5': 'summer'
-            };
-            const categoryNames = {
-                '1': '待办事项',
-                '2': '标化成绩',
-                '3': '课外活动',
-                '4': '竞赛',
-                '5': '夏校'
-            };
+            // 创建编辑面板
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
             
-            const currentCategory = Object.keys(categoryMap).find(key => categoryMap[key] === task.category);
-            const categoryPrompt = `请选择新的任务类别：\n${Object.entries(categoryNames).map(([key, name]) => `${key}-${name}`).join('\n')}`;
-            const newCategory = prompt(categoryPrompt, currentCategory);
-            if (newCategory && ['1', '2', '3', '4', '5'].includes(newCategory)) {
-                task.category = categoryMap[newCategory];
-            }
+            const panel = document.createElement('div');
+            panel.className = 'edit-panel';
+            
+            panel.innerHTML = `
+                <h2>编辑事项</h2>
+                <label for="taskName">事项名称</label>
+                <input type="text" id="taskName" value="${task.text}">
+                
+                <label for="taskCategory">事项类别</label>
+                <select id="taskCategory">
+                    <option value="general" ${task.category === 'general' ? 'selected' : ''}>待办事项</option>
+                    <option value="test" ${task.category === 'test' ? 'selected' : ''}>标化成绩</option>
+                    <option value="activity" ${task.category === 'activity' ? 'selected' : ''}>课外活动</option>
+                    <option value="competition" ${task.category === 'competition' ? 'selected' : ''}>竞赛</option>
+                    <option value="summer" ${task.category === 'summer' ? 'selected' : ''}>夏校</option>
+                </select>
+                
+                <label for="startDate">开始时间</label>
+                <input type="date" id="startDate" value="${task.start_date}">
+                
+                <label for="endDate">结束时间</label>
+                <input type="date" id="endDate" value="${task.end_date}">
+                
+                <div class="edit-panel-buttons">
+                    <button class="delete" onclick="deleteTask(${task.id}, ${year})">删除</button>
+                    <button class="cancel" onclick="closeEditPanel()">取消</button>
+                    <button class="save" onclick="saveTaskChanges(${task.id}, ${year})">保存</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(panel);
+        }
 
-            // 编辑时间
-            const newStartDate = prompt("请输入新的开始时间（格式：YYYY-MM-DD）：", task.start_date);
-            if (newStartDate && isValidDate(newStartDate)) {
-                task.start_date = newStartDate;
-            }
+        function closeEditPanel() {
+            const overlay = document.querySelector('.overlay');
+            const panel = document.querySelector('.edit-panel');
+            if (overlay) overlay.remove();
+            if (panel) panel.remove();
+        }
 
-            const newEndDate = prompt("请输入新的结束时间（格式：YYYY-MM-DD）：", task.end_date);
-            if (newEndDate && isValidDate(newEndDate)) {
-                task.end_date = newEndDate;
-            }
+        function saveTaskChanges(taskId, year) {
+            const taskName = document.getElementById('taskName').value;
+            const taskCategory = document.getElementById('taskCategory').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
 
-            // 验证日期
-            if (new Date(task.end_date) < new Date(task.start_date)) {
-                alert("结束日期不能早于开始日期");
+            if (!taskName || !startDate || !endDate) {
+                alert('请填写所有必填字段');
                 return;
             }
 
-            // 重新渲染甘特图
+            if (new Date(endDate) < new Date(startDate)) {
+                alert('结束日期不能早于开始日期');
+                return;
+            }
+
+            const startYear = new Date(startDate).getFullYear();
+            const endYear = new Date(endDate).getFullYear();
+
+            // 找到并更新任务
+            let taskArray;
+            if (startYear === 2024) taskArray = tasks2024;
+            else if (startYear === 2025) taskArray = tasks2025;
+            else if (startYear === 2026) taskArray = tasks2026;
+
+            const taskIndex = taskArray.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                taskArray[taskIndex] = {
+                    ...taskArray[taskIndex],
+                    text: taskName,
+                    category: taskCategory,
+                    start_date: startDate,
+                    end_date: endDate
+                };
+            }
+
+            // 重新渲染所有甘特图
             renderGantt(2024, tasks2024);
             renderGantt(2025, tasks2025);
             renderGantt(2026, tasks2026);
+
+            closeEditPanel();
+        }
+
+        function deleteTask(taskId, year) {
+            if (!confirm('确定要删除这个事项吗？')) {
+                return;
+            }
+
+            // 找到并删除任务
+            let taskArray;
+            if (year === 2024) taskArray = tasks2024;
+            else if (year === 2025) taskArray = tasks2025;
+            else if (year === 2026) taskArray = tasks2026;
+
+            const taskIndex = taskArray.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                taskArray.splice(taskIndex, 1);
+            }
+
+            // 重新渲染所有甘特图
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
+
+            closeEditPanel();
         }
 
         function addTask() {
@@ -401,65 +528,6 @@
             renderGantt(2024, tasks2024);
             renderGantt(2025, tasks2025);
             renderGantt(2026, tasks2026);
-        }
-
-        function removeTask() {
-            const taskId = prompt("请输入要删除的事项ID：");
-            if (!taskId) return;
-
-            const index = tasks2024.findIndex(task => task.id === parseInt(taskId));
-            if (index !== -1) {
-                tasks2024.splice(index, 1);
-                renderGantt(2024, tasks2024);
-            } else {
-                alert("未找到对应的事项");
-            }
-        }
-
-        function addTask2025() {
-            const taskText = prompt("请输入计划事项名称：");
-            if (!taskText) return;
-
-            const startDate = prompt("请输入开始时间（2025年的日期，格式：YYYY-MM-DD）：");
-            if (!startDate || !isValidDate(startDate) || new Date(startDate).getFullYear() !== 2025) {
-                alert("请输入2025年的有效日期（YYYY-MM-DD格式）");
-                return;
-            }
-
-            const endDate = prompt("请输入结束时间（2025年的日期，格式：YYYY-MM-DD）：");
-            if (!endDate || !isValidDate(endDate) || new Date(endDate).getFullYear() !== 2025) {
-                alert("请输入2025年的有效日期（YYYY-MM-DD格式）");
-                return;
-            }
-
-            if (new Date(endDate) < new Date(startDate)) {
-                alert("结束日期不能早于开始日期");
-                return;
-            }
-
-            const newId = Math.max(...tasks2025.map(task => task.id)) + 1;
-            tasks2025.push({
-                id: newId,
-                text: taskText,
-                start_date: startDate,
-                end_date: endDate,
-                status: "waiting"
-            });
-
-            renderGantt(2025, tasks2025);
-        }
-
-        function removeTask2025() {
-            const taskId = prompt("请输入要删除的事项ID：");
-            if (!taskId) return;
-
-            const index = tasks2025.findIndex(task => task.id === parseInt(taskId));
-            if (index !== -1) {
-                tasks2025.splice(index, 1);
-                renderGantt(2025, tasks2025);
-            } else {
-                alert("未找到对应的事项");
-            }
         }
 
         function isValidDate(dateString) {
