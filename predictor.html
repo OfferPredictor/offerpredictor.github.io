@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>美本录取率预测系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>美本录取率预测系统</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="university">目标院校</label>
+                <select id="university" required>
+                    <option value="">请选择院校</option>
+                    <option value="Harvard">哈佛大学</option>
+                    <option value="Yale">耶鲁大学</option>
+                    <option value="Princeton">普林斯顿大学</option>
+                    <option value="Columbia">哥伦比亚大学</option>
+                    <option value="MIT">麻省理工学院</option>
+                    <option value="Stanford">斯坦福大学</option>
+                    <option value="UCB">加州大学伯克利分校</option>
+                    <option value="UCLA">加州大学洛杉矶分校</option>
+                    <option value="NYU">纽约大学</option>
+                    <option value="USC">南加州大学</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="toefl">托福成绩</label>
+                <input type="number" id="toefl" min="0" max="120" required>
+            </div>
+            <div class="form-group">
+                <label for="sat">SAT成绩</label>
+                <input type="number" id="sat" min="400" max="1600" required>
+            </div>
+            <div class="form-group">
+                <label for="gpa">GPA（4.0制）</label>
+                <input type="number" id="gpa" min="0" max="4" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>AP课程成绩（5分制）</label>
+                <div id="apCourses">
+                    <input type="number" class="ap-score" min="1" max="5" placeholder="AP成绩">
+                </div>
+                <button type="button" onclick="addAPCourse()">添加AP课程</button>
+            </div>
+            <div class="form-group">
+                <label>国内课程成绩（100分制）</label>
+                <div id="domesticCourses">
+                    <input type="number" class="domestic-score" min="0" max="100" placeholder="课程成绩">
+                </div>
+                <button type="button" onclick="addDomesticCourse()">添加课程</button>
+            </div>
+            <button type="button" onclick="calculateProbability()">预测录取率</button>
+        </form>
+    </div>
+    <div class="container result" id="result">
+        <h2>预测结果</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar">0%</div>
+        </div>
+        <div id="resultDetails"></div>
+    </div>
+    <script>
+        function addAPCourse() {
+            const container = document.getElementById('apCourses');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'ap-score';
+            input.min = '1';
+            input.max = '5';
+            input.placeholder = 'AP成绩';
+            container.appendChild(input);
+        }
+
+        function addDomesticCourse() {
+            const container = document.getElementById('domesticCourses');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'domestic-score';
+            input.min = '0';
+            input.max = '100';
+            input.placeholder = '课程成绩';
+            container.appendChild(input);
+        }
+
+        function calculateProbability() {
+            const university = document.getElementById('university').value;
+            const toefl = parseFloat(document.getElementById('toefl').value);
+            const sat = parseFloat(document.getElementById('sat').value);
+            const gpa = parseFloat(document.getElementById('gpa').value);
+
+            // 计算AP课程平均分
+            const apScores = Array.from(document.getElementsByClassName('ap-score'))
+                .map(input => parseFloat(input.value))
+                .filter(score => !isNaN(score));
+            const apAverage = apScores.length > 0 ? apScores.reduce((a, b) => a + b) / apScores.length : 0;
+
+            // 计算国内课程平均分（转换为5分制）
+            const domesticScores = Array.from(document.getElementsByClassName('domestic-score'))
+                .map(input => parseFloat(input.value))
+                .filter(score => !isNaN(score));
+            const domesticAverage = domesticScores.length > 0 
+                ? (domesticScores.reduce((a, b) => a + b) / domesticScores.length) / 20 
+                : 0;
+
+            // 计算加权分数
+            const toeflWeight = 0.2;
+            const satWeight = 0.3;
+            const gpaWeight = 0.2;
+            const apWeight = 0.15;
+            const domesticWeight = 0.15;
+
+            const weightedScore = (toefl / 120) * toeflWeight +
+                                (sat / 1600) * satWeight +
+                                (gpa / 4) * gpaWeight +
+                                (apAverage / 5) * apWeight +
+                                (domesticAverage / 5) * domesticWeight;
+
+            // 根据院校调整基础录取率
+            let baseRate = 0.1; // 默认基础录取率
+            switch(university) {
+                case 'Harvard':
+                case 'Yale':
+                case 'Princeton':
+                    baseRate = 0.05;
+                    break;
+                case 'Columbia':
+                case 'MIT':
+                case 'Stanford':
+                    baseRate = 0.06;
+                    break;
+                case 'UCB':
+                case 'UCLA':
+                    baseRate = 0.12;
+                    break;
+                case 'NYU':
+                case 'USC':
+                    baseRate = 0.15;
+                    break;
+            }
+
+            // 计算最终概率
+            const probability = baseRate * (1 + weightedScore);
+
+            // 显示结果
+            showResult(probability, university, baseRate);
+
+            // 记录预测数据
+            const predictionData = {
+                timestamp: new Date().toISOString(),
+                university: university,
+                toefl: toefl,
+                sat: sat,
+                gpa: gpa,
+                apAverage: apAverage,
+                domesticAverage: domesticAverage * 20, // 转换回100分制显示
+                probability: probability
+            };
+
+            // 发送数据到服务器
+            fetch('http://localhost:3000/save-prediction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(predictionData)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function showResult(probability, university, baseRate) {
+            const resultDiv = document.getElementById('result');
+            const progressBar = document.getElementById('progressBar');
+            const resultDetails = document.getElementById('resultDetails');
+
+            // 设置进度条
+            const percentage = Math.min(Math.round(probability * 100), 20); // 限制最大显示为20%
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+
+            // 设置结果详情
+            let details = `<p>目标院校：${university}</p>`;
+            details += `<p>基础录取率：${(baseRate * 100).toFixed(1)}%</p>`;
+            details += `<p>预测录取率：${(probability * 100).toFixed(1)}%</p>`;
+
+            // 添加建议
+            if (probability > baseRate * 3) {
+                details += '<p style="color: green;">您的申请竞争力很强！</p>';
+            } else if (probability > baseRate * 1.5) {
+                details += '<p style="color: orange;">您的申请竞争力中等。</p>';
+            } else {
+                details += '<p style="color: red;">建议提升标化成绩或考虑其他院校。</p>';
+            }
+
+            resultDetails.innerHTML = details;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
