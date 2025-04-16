@@ -3,79 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>美本申请规划方案</title>
-    <script src="https://cdn.dhtmlx.com/gantt/7.1/dhtmlxgantt.js"></script>
-    <link href="https://cdn.dhtmlx.com/gantt/7.1/dhtmlxgantt.css" rel="stylesheet">
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
             background-color: #f5f5f5;
         }
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            min-height: 600px;
         }
         h1 {
             color: #333;
             text-align: center;
             margin-bottom: 30px;
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #666;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .back-button:hover {
-            background-color: #555;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .gantt-controls {
-            margin: 20px 0;
-        }
-        .event-type {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 3px;
-            color: white;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-        .event-type.waiting {
-            background-color: #FFA500;
-        }
-        .event-type.ongoing {
-            background-color: #4CAF50;
-        }
-        .event-type.completed {
-            background-color: #2196F3;
-        }
-        #gantt {
+        .gantt_container {
+            height: 500px;
             width: 100%;
-            height: 400px;
         }
-        /* 甘特图任务样式 */
         .gantt_task_line.waiting {
             background-color: #FFA500;
             border-color: #FF8C00;
@@ -88,47 +41,101 @@
             background-color: #2196F3;
             border-color: #1976D2;
         }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 8px 16px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .status-legend {
+            margin-top: 10px;
+        }
+        .status-item {
+            display: inline-block;
+            padding: 4px 8px;
+            margin-right: 10px;
+            color: white;
+            border-radius: 3px;
+        }
+        .status-waiting { background-color: #FFA500; }
+        .status-ongoing { background-color: #4CAF50; }
+        .status-completed { background-color: #2196F3; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>美本申请规划方案</h1>
-        <div class="gantt-controls">
+        <div class="controls">
             <button onclick="addTask()">添加事项</button>
             <button onclick="removeTask()">删除事项</button>
-            <div style="margin-top: 10px;">
-                <span class="event-type waiting">待办事项</span>
-                <span class="event-type ongoing">进行中</span>
-                <span class="event-type completed">已完成</span>
+            <div class="status-legend">
+                <span class="status-item status-waiting">待办事项</span>
+                <span class="status-item status-ongoing">进行中</span>
+                <span class="status-item status-completed">已完成</span>
             </div>
         </div>
-        <div id="gantt"></div>
-        <a href="index.html" class="back-button">返回首页</a>
+        <div id="gantt_here" class="gantt_container"></div>
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: #666; text-decoration: none;">返回首页</a>
+        </div>
     </div>
 
     <script>
-        // 基础配置
-        gantt.config.date_format = "%Y-%m-%d";
-        gantt.config.scale_unit = "month";
-        gantt.config.step = 1;
+        document.addEventListener('DOMContentLoaded', function() {
+            // 基础配置
+            gantt.config.date_format = "%Y-%m-%d";
+            gantt.config.scale_height = 50;
+            gantt.config.row_height = 30;
+            gantt.config.task_height = 20;
+            gantt.config.grid_width = 300;
 
-        // 设置时间范围为2024年
-        gantt.config.start_date = new Date(2024, 0, 1);
-        gantt.config.end_date = new Date(2024, 11, 31);
+            // 设置时间刻度
+            gantt.config.scales = [
+                {unit: "year", step: 1, format: "%Y"},
+                {unit: "month", step: 1, format: "%M"}
+            ];
 
-        // 初始化甘特图
-        gantt.init("gantt");
+            // 设置月份名称
+            gantt.locale.labels.month_short = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
 
-        // 初始化数据
-        const data = {
-            data: [
-                {id: 1, text: "托福考试", start_date: "2024-01-01", end_date: "2024-03-31"},
-                {id: 2, text: "SAT考试", start_date: "2024-04-01", end_date: "2024-06-30"},
-                {id: 3, text: "准备申请", start_date: "2024-07-01", end_date: "2024-12-31"}
-            ]
-        };
+            // 设置时间范围
+            gantt.config.start_date = new Date(2024, 0, 1);
+            gantt.config.end_date = new Date(2024, 11, 31);
 
-        gantt.parse(data);
+            // 设置列
+            gantt.config.columns = [
+                {name: "text", label: "计划事项", tree: true, width: 200},
+                {name: "start_date", label: "开始时间", align: "center", width: 100},
+                {name: "end_date", label: "结束时间", align: "center", width: 100}
+            ];
+
+            // 任务样式
+            gantt.templates.task_class = function(start, end, task) {
+                return task.status || "waiting";
+            };
+
+            // 初始化
+            gantt.init("gantt_here");
+
+            // 加载数据
+            var tasks = {
+                data: [
+                    {id: 1, text: "托福考试", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting"},
+                    {id: 2, text: "SAT考试", start_date: "2024-04-01", end_date: "2024-06-30", status: "waiting"},
+                    {id: 3, text: "准备申请", start_date: "2024-07-01", end_date: "2024-12-31", status: "waiting"}
+                ]
+            };
+            gantt.parse(tasks);
+        });
 
         // 添加任务
         function addTask() {
@@ -158,8 +165,7 @@
                 text: taskText,
                 start_date: startDate,
                 end_date: endDate,
-                status: "waiting",
-                progress: 0
+                status: "waiting"
             });
         }
 
@@ -180,19 +186,16 @@
             const task = gantt.getTask(id);
             if (task.status === "waiting") {
                 task.status = "ongoing";
-                task.progress = 50;
             } else if (task.status === "ongoing") {
                 task.status = "completed";
-                task.progress = 100;
             } else {
                 task.status = "waiting";
-                task.progress = 0;
             }
             gantt.updateTask(id);
             return true;
         });
 
-        // 辅助函数：验证日期格式
+        // 验证日期
         function isValidDate(dateString) {
             const regex = /^\d{4}-\d{2}-\d{2}$/;
             if (!regex.test(dateString)) return false;
@@ -205,4 +208,5 @@
         }
     </script>
 </body>
+</html> 
 </html> 
