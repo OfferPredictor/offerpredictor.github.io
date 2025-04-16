@@ -13,7 +13,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
@@ -28,8 +28,8 @@
         }
 
         .gantt-container {
-            width: 100%;
-            margin-bottom: 20px;
+            width: 600px;
+            margin: 0 auto 20px;
         }
 
         .gantt-year {
@@ -50,18 +50,23 @@
             display: flex;
             border-bottom: 1px solid #ddd;
             background-color: #f8f8f8;
+            width: 100%;
+            height: 28px;
         }
 
         .gantt-header-cell {
-            padding: 10px;
+            padding: 4px;
             text-align: center;
             width: 8.33%;
             border-right: 1px solid #ddd;
             box-sizing: border-box;
-            height: 40px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
         }
 
         .gantt-header-cell.current-month {
@@ -73,6 +78,7 @@
         .gantt-body {
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         .gantt-row {
@@ -138,6 +144,17 @@
 
         .controls {
             margin: 20px 0;
+            width: 600px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .controls-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
 
         button {
@@ -170,10 +187,11 @@
         }
 
         .category-legend {
-            margin-top: 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            margin: 0;
+            justify-content: center;
         }
 
         .category-item {
@@ -184,7 +202,7 @@
             color: white;
             border-radius: 3px;
             font-size: 12px;
-            margin-right: 10px;
+            margin: 0;
         }
 
         .category-item.category-general {
@@ -295,8 +313,8 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 20px;
-            margin: 20px 0;
-            max-width: 800px;
+            margin: 20px auto;
+            width: 600px;
         }
 
         .task-description-card h2 {
@@ -360,8 +378,10 @@
     <div class="container">
         <h1>美本申请规划方案</h1>
         <div class="controls">
-            <button onclick="addTask()">添加事项</button>
-            <button onclick="exportToPDF()">导出PDF</button>
+            <div class="controls-buttons">
+                <button onclick="addTask()">添加事项</button>
+                <button onclick="exportToPDF()">导出PDF</button>
+            </div>
             <div class="category-legend">
                 <label class="category-item category-general">
                     <input type="checkbox" checked onchange="toggleCategory('general')">
@@ -803,9 +823,23 @@
 
         function toggleCategory(category) {
             visibleCategories[category] = !visibleCategories[category];
+            
+            // 重新渲染甘特图
             renderGantt(2024, tasks2024);
             renderGantt(2025, tasks2025);
             renderGantt(2026, tasks2026);
+            
+            // 更新任务描述卡片的显示状态
+            const allTasks = [...tasks2024, ...tasks2025, ...tasks2026];
+            allTasks.forEach(task => {
+                const cardId = `card-${task.id}-${task.start_date.split('-')[0]}`;
+                const card = document.getElementById(cardId);
+                if (card) {
+                    if (task.category === category) {
+                        card.style.display = visibleCategories[category] ? 'block' : 'none';
+                    }
+                }
+            });
         }
 
         function renderGantt(year, tasks) {
