@@ -11,6 +11,7 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -19,30 +20,35 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
         h1 {
             color: #333;
             text-align: center;
             margin-bottom: 30px;
         }
+
         .gantt-container {
             width: 100%;
             margin-bottom: 20px;
         }
+
         .gantt-year {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 10px;
             color: #333;
         }
+
         .gantt-header {
             display: flex;
             border-bottom: 1px solid #ddd;
             background-color: #f8f8f8;
         }
+
         .gantt-header-cell {
             padding: 10px;
             text-align: center;
-            width: 8.33%;  /* 100% / 12个月 */
+            width: 8.33%;
             border-right: 1px solid #ddd;
             box-sizing: border-box;
             height: 40px;
@@ -50,16 +56,19 @@
             align-items: center;
             justify-content: center;
         }
+
         .gantt-body {
             display: flex;
             flex-direction: column;
         }
+
         .gantt-row {
             display: flex;
             height: 40px;
             border-bottom: 1px solid #eee;
             position: relative;
         }
+
         .gantt-row-bars {
             flex: 1;
             position: relative;
@@ -67,6 +76,7 @@
             width: 100%;
             box-sizing: border-box;
         }
+
         .gantt-bar {
             position: absolute;
             height: 20px;
@@ -83,24 +93,31 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .gantt-bar.category-general {
             background-color: #FFA500;
         }
+
         .gantt-bar.category-test {
             background-color: #9C27B0;
         }
+
         .gantt-bar.category-activity {
             background-color: #FF5722;
         }
+
         .gantt-bar.category-competition {
             background-color: #E91E63;
         }
+
         .gantt-bar.category-summer {
             background-color: #009688;
         }
+
         .controls {
             margin: 20px 0;
         }
+
         button {
             padding: 8px 16px;
             margin-right: 10px;
@@ -110,36 +127,71 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .status-legend {
-            margin-top: 10px;
+
+        .display-options {
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
         }
-        .status-item {
-            display: inline-block;
-            padding: 4px 8px;
-            margin-right: 10px;
-            color: white;
-            border-radius: 3px;
+
+        .display-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
         }
-        .status-waiting { background-color: #FFA500; }
-        .status-ongoing { background-color: #4CAF50; }
-        .status-completed { background-color: #2196F3; }
+
+        .display-options input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
         .category-legend {
             margin-top: 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
+
         .category-item {
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 5px;
             padding: 4px 8px;
             color: white;
             border-radius: 3px;
+            font-size: 12px;
+            margin-right: 10px;
         }
-        .category-general { background-color: #FFA500; }
-        .category-test { background-color: #9C27B0; }
-        .category-activity { background-color: #FF5722; }
-        .category-competition { background-color: #E91E63; }
-        .category-summer { background-color: #009688; }
+
+        .category-item.category-general {
+            background-color: #FFA500;
+        }
+
+        .category-item.category-test {
+            background-color: #9C27B0;
+        }
+
+        .category-item.category-activity {
+            background-color: #FF5722;
+        }
+
+        .category-item.category-competition {
+            background-color: #E91E63;
+        }
+
+        .category-item.category-summer {
+            background-color: #009688;
+        }
+
+        .category-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            margin: 0;
+            cursor: pointer;
+        }
+
         .edit-panel {
             position: fixed;
             top: 50%;
@@ -152,15 +204,18 @@
             z-index: 1000;
             width: 400px;
         }
+
         .edit-panel h2 {
             margin-top: 0;
             color: #333;
         }
+
         .edit-panel label {
             display: block;
             margin: 10px 0 5px;
             color: #666;
         }
+
         .edit-panel input, .edit-panel select {
             width: 100%;
             padding: 8px;
@@ -168,30 +223,36 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+
         .edit-panel-buttons {
             margin-top: 20px;
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
+
         .edit-panel-buttons button {
             padding: 8px 16px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
+
         .edit-panel-buttons .save {
             background-color: #4CAF50;
             color: white;
         }
+
         .edit-panel-buttons .cancel {
             background-color: #f44336;
             color: white;
         }
+
         .edit-panel-buttons .delete {
             background-color: #f44336;
             color: white;
         }
+
         .overlay {
             position: fixed;
             top: 0;
@@ -200,6 +261,11 @@
             bottom: 0;
             background-color: rgba(0,0,0,0.5);
             z-index: 999;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -210,11 +276,26 @@
             <button onclick="addTask()">添加事项</button>
             <button onclick="exportToPDF()">导出PDF</button>
             <div class="category-legend">
-                <span class="category-item category-general">待办事项</span>
-                <span class="category-item category-test">标化成绩</span>
-                <span class="category-item category-activity">课外活动</span>
-                <span class="category-item category-competition">竞赛</span>
-                <span class="category-item category-summer">夏校</span>
+                <label class="category-item category-general">
+                    <input type="checkbox" checked onchange="toggleCategory('general')">
+                    待办事项
+                </label>
+                <label class="category-item category-test">
+                    <input type="checkbox" checked onchange="toggleCategory('test')">
+                    标化成绩
+                </label>
+                <label class="category-item category-activity">
+                    <input type="checkbox" checked onchange="toggleCategory('activity')">
+                    课外活动
+                </label>
+                <label class="category-item category-competition">
+                    <input type="checkbox" checked onchange="toggleCategory('competition')">
+                    竞赛
+                </label>
+                <label class="category-item category-summer">
+                    <input type="checkbox" checked onchange="toggleCategory('summer')">
+                    夏校
+                </label>
             </div>
         </div>
         <div id="gantt_2024" class="gantt-container"></div>
@@ -261,6 +342,21 @@
             renderGantt(2026, tasks2026);
         });
 
+        const visibleCategories = {
+            'general': true,
+            'test': true,
+            'activity': true,
+            'competition': true,
+            'summer': true
+        };
+
+        function toggleCategory(category) {
+            visibleCategories[category] = !visibleCategories[category];
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
+        }
+
         function renderGantt(year, tasks) {
             const container = document.getElementById(`gantt_${year}`);
             container.innerHTML = '';
@@ -288,8 +384,10 @@
             // 创建任务行
             const body = document.createElement('div');
             body.className = 'gantt-body';
-
+            
             tasks.forEach(task => {
+                if (!visibleCategories[task.category]) return;
+
                 const row = document.createElement('div');
                 row.className = 'gantt-row';
                 row.dataset.taskId = task.id;
@@ -309,8 +407,18 @@
                 bar.className = `gantt-bar category-${task.category}`;
                 bar.style.left = `${(startMonth + startDay / 31) * 8.33}%`;
                 bar.style.width = `${(endMonth - startMonth + (endDay - startDay) / 31) * 8.33}%`;
-                bar.textContent = task.text;
-                bar.title = `${task.text} (${task.start_date} 至 ${task.end_date})`;
+                
+                // 获取类别名称
+                const categoryNames = {
+                    'general': '待办事项',
+                    'test': '标化成绩',
+                    'activity': '课外活动',
+                    'competition': '竞赛',
+                    'summer': '夏校'
+                };
+                
+                bar.textContent = `${task.text} (${categoryNames[task.category]})`;
+                bar.title = `${task.text} (${categoryNames[task.category]})\n${task.start_date} 至 ${task.end_date}`;
                 
                 // 双击编辑任务
                 bar.addEventListener('dblclick', function() {
@@ -440,37 +548,56 @@
         }
 
         function addTask() {
-            const taskText = prompt("请输入计划事项名称：");
-            if (!taskText) return;
+            // 创建编辑面板
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            
+            const panel = document.createElement('div');
+            panel.className = 'edit-panel';
+            
+            panel.innerHTML = `
+                <h2>添加事项</h2>
+                <label for="taskName">事项名称</label>
+                <input type="text" id="taskName" placeholder="请输入事项名称">
+                
+                <label for="taskCategory">事项类别</label>
+                <select id="taskCategory">
+                    <option value="general">待办事项</option>
+                    <option value="test">标化成绩</option>
+                    <option value="activity">课外活动</option>
+                    <option value="competition">竞赛</option>
+                    <option value="summer">夏校</option>
+                </select>
+                
+                <label for="startDate">开始时间</label>
+                <input type="date" id="startDate">
+                
+                <label for="endDate">结束时间</label>
+                <input type="date" id="endDate">
+                
+                <div class="edit-panel-buttons">
+                    <button class="cancel" onclick="closeEditPanel()">取消</button>
+                    <button class="save" onclick="saveNewTask()">保存</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(panel);
+        }
 
-            const category = prompt("请选择事项类别（1-待办事项，2-标化成绩，3-课外活动，4-竞赛，5-夏校）：");
-            if (!category || !['1', '2', '3', '4', '5'].includes(category)) {
-                alert("请选择有效的类别（1-5）");
-                return;
-            }
+        function saveNewTask() {
+            const taskName = document.getElementById('taskName').value;
+            const taskCategory = document.getElementById('taskCategory').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
 
-            const categoryMap = {
-                '1': 'general',
-                '2': 'test',
-                '3': 'activity',
-                '4': 'competition',
-                '5': 'summer'
-            };
-
-            const startDate = prompt("请输入开始时间（格式：YYYY-MM-DD）：");
-            if (!startDate || !isValidDate(startDate)) {
-                alert("请输入有效的日期（YYYY-MM-DD格式）");
-                return;
-            }
-
-            const endDate = prompt("请输入结束时间（格式：YYYY-MM-DD）：");
-            if (!endDate || !isValidDate(endDate)) {
-                alert("请输入有效的日期（YYYY-MM-DD格式）");
+            if (!taskName || !startDate || !endDate) {
+                alert('请填写所有必填字段');
                 return;
             }
 
             if (new Date(endDate) < new Date(startDate)) {
-                alert("结束日期不能早于开始日期");
+                alert('结束日期不能早于开始日期');
                 return;
             }
 
@@ -487,11 +614,11 @@
                     
                     const task = {
                         id: newId,
-                        text: taskText,
+                        text: taskName,
                         start_date: currentStartDate,
                         end_date: yearEndDate,
                         status: "waiting",
-                        category: categoryMap[category]
+                        category: taskCategory
                     };
 
                     if (currentYear === 2024) {
@@ -509,11 +636,11 @@
                 const newId = Math.max(...tasks2024.map(task => task.id), ...tasks2025.map(task => task.id), ...tasks2026.map(task => task.id)) + 1;
                 const task = {
                     id: newId,
-                    text: taskText,
+                    text: taskName,
                     start_date: startDate,
                     end_date: endDate,
                     status: "waiting",
-                    category: categoryMap[category]
+                    category: taskCategory
                 };
 
                 if (startYear === 2024) {
@@ -528,6 +655,8 @@
             renderGantt(2024, tasks2024);
             renderGantt(2025, tasks2025);
             renderGantt(2026, tasks2026);
+
+            closeEditPanel();
         }
 
         function isValidDate(dateString) {
@@ -572,6 +701,12 @@
                 exportButton.textContent = originalText;
                 exportButton.disabled = false;
             });
+        }
+
+        function toggleCategoryDisplay() {
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
         }
     </script>
 </body>
