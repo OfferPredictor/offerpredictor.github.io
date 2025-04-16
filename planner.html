@@ -417,7 +417,7 @@
                     'summer': '夏校'
                 };
                 
-                bar.textContent = `${task.text} (${categoryNames[task.category]})`;
+                bar.textContent = task.text;
                 bar.title = `${task.text} (${categoryNames[task.category]})\n${task.start_date} 至 ${task.end_date}`;
                 
                 // 双击编辑任务
