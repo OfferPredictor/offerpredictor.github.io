@@ -39,6 +39,13 @@
             color: #333;
         }
 
+        .current-month {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
         .gantt-header {
             display: flex;
             border-bottom: 1px solid #ddd;
@@ -55,6 +62,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .gantt-header-cell.current-month {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            font-weight: bold;
         }
 
         .gantt-body {
@@ -85,13 +98,21 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             color: white;
-            font-size: 12px;
+            font-size: 14px;
             padding: 0 5px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 50px;
+        }
+
+        .gantt-bar:hover {
+            overflow: visible;
+            z-index: 1;
+            background-color: inherit;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
         }
 
         .gantt-bar.category-general {
@@ -364,7 +385,7 @@
             // 添加年份标题
             const yearTitle = document.createElement('div');
             yearTitle.className = 'gantt-year';
-            yearTitle.textContent = `${year}年`;
+            yearTitle.textContent = year;
             container.appendChild(yearTitle);
 
             // 创建表头
@@ -372,10 +393,17 @@
             header.className = 'gantt-header';
 
             // 添加月份列
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            
             for (let i = 0; i < 12; i++) {
                 const monthHeader = document.createElement('div');
                 monthHeader.className = 'gantt-header-cell';
-                monthHeader.textContent = new Date(year, i).toLocaleString('en-US', { month: 'short' });
+                if (year === currentYear && i === currentMonth) {
+                    monthHeader.classList.add('current-month');
+                }
+                monthHeader.textContent = `${i + 1}月`;
                 header.appendChild(monthHeader);
             }
 
@@ -402,11 +430,39 @@
                 const endMonth = endDate.getMonth();
                 const startDay = startDate.getDate();
                 const endDay = endDate.getDate();
+                
+                // 计算每个月的天数
+                const getDaysInMonth = (year, month) => {
+                    return new Date(year, month + 1, 0).getDate();
+                };
+                
+                // 计算开始位置
+                const startMonthDays = getDaysInMonth(startDate.getFullYear(), startMonth);
+                const startPosition = (startMonth + (startDay - 1) / startMonthDays) * 8.33;
+                
+                // 计算宽度
+                let width = 0;
+                if (startDate.getFullYear() === endDate.getFullYear()) {
+                    // 同一年内
+                    const endMonthDays = getDaysInMonth(endDate.getFullYear(), endMonth);
+                    width = (endMonth - startMonth + (endDay - 1) / endMonthDays) * 8.33;
+                } else {
+                    // 跨年情况
+                    const startYearEndMonthDays = getDaysInMonth(startDate.getFullYear(), 11);
+                    const endYearStartMonthDays = getDaysInMonth(endDate.getFullYear(), 0);
+                    width = ((11 - startMonth + (startMonthDays - startDay + 1) / startMonthDays) + 
+                            (endMonth + (endDay - 1) / endYearStartMonthDays)) * 8.33;
+                }
+
+                // 确保宽度不超过实际结束日期
+                const totalMonths = endMonth - startMonth + 1;
+                const maxWidth = totalMonths * 8.33;
+                width = Math.min(width, maxWidth);
 
                 const bar = document.createElement('div');
                 bar.className = `gantt-bar category-${task.category}`;
-                bar.style.left = `${(startMonth + startDay / 31) * 8.33}%`;
-                bar.style.width = `${(endMonth - startMonth + (endDay - startDay) / 31) * 8.33}%`;
+                bar.style.left = `${startPosition}%`;
+                bar.style.width = `${width}%`;
                 
                 // 获取类别名称
                 const categoryNames = {
