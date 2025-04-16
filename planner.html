@@ -80,6 +80,7 @@
             height: 40px;
             border-bottom: 1px solid #eee;
             position: relative;
+            margin-bottom: 10px;
         }
 
         .gantt-row-bars {
@@ -288,6 +289,71 @@
             color: #666;
             text-decoration: none;
         }
+
+        .task-description-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+
+        .task-description-card h2 {
+            color: #333;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-description-card .title-category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .task-description-card .title-category h2 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .task-description-card .category-tag {
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .task-description-card .time-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .task-description-card .time-item {
+            flex: 1;
+        }
+
+        .task-description-card .time-item:first-child {
+            margin-right: 20px;
+        }
+
+        .task-description-card p {
+            color: #666;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .task-description-card .highlight {
+            color: #1976d2;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -322,6 +388,350 @@
         <div id="gantt_2024" class="gantt-container"></div>
         <div id="gantt_2025" class="gantt-container"></div>
         <div id="gantt_2026" class="gantt-container"></div>
+        
+        <!-- 2024年事项描述卡片 -->
+        <div class="task-description-card" id="card-1-2024">
+            <div class="title-category">
+                <h2>托福首考</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年1月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年3月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>第一次托福考试，目标分数100+</p>
+            <p><span class="highlight">规划理由：</span>托福成绩是美本申请的重要指标，提前准备可以减轻后期压力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-2-2024">
+            <div class="title-category">
+                <h2>AP课程学习</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年4月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>准备AP考试，选择2-3门课程</p>
+            <p><span class="highlight">规划理由：</span>AP课程可以展示学术能力和挑战性，提高申请竞争力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-3-2024">
+            <div class="title-category">
+                <h2>AP考试</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年5月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>参加AP考试，目标分数4-5分</p>
+            <p><span class="highlight">规划理由：</span>AP考试成绩是大学申请的重要参考指标</p>
+        </div>
+        
+        <div class="task-description-card" id="card-4-2024">
+            <div class="title-category">
+                <h2>暑期夏校申请</h2>
+                <span class="category-tag">夏校</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年6月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年6月30日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>申请暑期夏校项目，准备申请材料</p>
+            <p><span class="highlight">规划理由：</span>夏校经历可以提升学术背景和综合能力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-5-2024">
+            <div class="title-category">
+                <h2>暑期夏校</h2>
+                <span class="category-tag">夏校</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年7月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年8月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>参加暑期夏校，提升学术背景</p>
+            <p><span class="highlight">规划理由：</span>夏校经历可以提升学术背景和综合能力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-6-2024">
+            <div class="title-category">
+                <h2>托福二考</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年9月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年10月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>第二次托福考试，目标分数110+</p>
+            <p><span class="highlight">规划理由：</span>提高托福成绩，为大学申请做准备</p>
+        </div>
+        
+        <div class="task-description-card" id="card-7-2024">
+            <div class="title-category">
+                <h2>课外活动规划</h2>
+                <span class="category-tag">课外活动</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2024年11月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2024年12月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>规划并开始参与课外活动</p>
+            <p><span class="highlight">规划理由：</span>课外活动是大学申请的重要组成部分</p>
+        </div>
+        
+        <!-- 2025年事项描述卡片 -->
+        <div class="task-description-card" id="card-1-2025">
+            <div class="title-category">
+                <h2>SAT首考</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年1月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年3月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>第一次SAT考试，目标分数1400+</p>
+            <p><span class="highlight">规划理由：</span>SAT成绩是美本申请的重要指标</p>
+        </div>
+        
+        <div class="task-description-card" id="card-2-2025">
+            <div class="title-category">
+                <h2>AP课程学习</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年4月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>准备AP考试，选择3-4门课程</p>
+            <p><span class="highlight">规划理由：</span>AP课程可以展示学术能力和挑战性</p>
+        </div>
+        
+        <div class="task-description-card" id="card-3-2025">
+            <div class="title-category">
+                <h2>AP考试</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年5月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>参加AP考试，目标分数4-5分</p>
+            <p><span class="highlight">规划理由：</span>AP考试成绩是大学申请的重要参考指标</p>
+        </div>
+        
+        <div class="task-description-card" id="card-4-2025">
+            <div class="title-category">
+                <h2>暑期夏校申请</h2>
+                <span class="category-tag">夏校</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年6月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年6月30日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>申请暑期夏校项目，准备申请材料</p>
+            <p><span class="highlight">规划理由：</span>夏校经历可以提升学术背景和综合能力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-5-2025">
+            <div class="title-category">
+                <h2>暑期夏校</h2>
+                <span class="category-tag">夏校</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年7月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年8月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>参加暑期夏校，提升学术背景</p>
+            <p><span class="highlight">规划理由：</span>夏校经历可以提升学术背景和综合能力</p>
+        </div>
+        
+        <div class="task-description-card" id="card-6-2025">
+            <div class="title-category">
+                <h2>SAT二考</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年9月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年10月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>第二次SAT考试，目标分数1500+</p>
+            <p><span class="highlight">规划理由：</span>提高SAT成绩，为大学申请做准备</p>
+        </div>
+        
+        <div class="task-description-card" id="card-7-2025">
+            <div class="title-category">
+                <h2>课外活动深化</h2>
+                <span class="category-tag">课外活动</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2025年11月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2025年12月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>深化课外活动，提升领导力</p>
+            <p><span class="highlight">规划理由：</span>课外活动是大学申请的重要组成部分</p>
+        </div>
+        
+        <!-- 2026年事项描述卡片 -->
+        <div class="task-description-card" id="card-1-2026">
+            <div class="title-category">
+                <h2>托福三考</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年1月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年3月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>第三次托福考试，目标分数115+</p>
+            <p><span class="highlight">规划理由：</span>提高托福成绩，为大学申请做准备</p>
+        </div>
+        
+        <div class="task-description-card" id="card-2-2026">
+            <div class="title-category">
+                <h2>AP课程学习</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年4月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>准备AP考试，选择3-4门课程</p>
+            <p><span class="highlight">规划理由：</span>AP课程可以展示学术能力和挑战性</p>
+        </div>
+        
+        <div class="task-description-card" id="card-3-2026">
+            <div class="title-category">
+                <h2>AP考试</h2>
+                <span class="category-tag">标化成绩</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年5月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年5月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>参加AP考试，目标分数4-5分</p>
+            <p><span class="highlight">规划理由：</span>AP考试成绩是大学申请的重要参考指标</p>
+        </div>
+        
+        <div class="task-description-card" id="card-4-2026">
+            <div class="title-category">
+                <h2>大学申请准备</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年6月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年8月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>准备大学申请材料，选择目标学校</p>
+            <p><span class="highlight">规划理由：</span>提前准备大学申请材料，为申请季做准备</p>
+        </div>
+        
+        <div class="task-description-card" id="card-5-2026">
+            <div class="title-category">
+                <h2>文书写作</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年9月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年10月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>撰写大学申请文书，修改完善</p>
+            <p><span class="highlight">规划理由：</span>文书是大学申请的重要组成部分</p>
+        </div>
+        
+        <div class="task-description-card" id="card-6-2026">
+            <div class="title-category">
+                <h2>提交申请</h2>
+                <span class="category-tag">待办事项</span>
+            </div>
+            <div class="time-row">
+                <div class="time-item">
+                    <p><span class="highlight">开始时间：</span>2026年11月1日</p>
+                </div>
+                <div class="time-item">
+                    <p><span class="highlight">结束时间：</span>2026年12月31日</p>
+                </div>
+            </div>
+            <p><span class="highlight">描述：</span>提交大学申请，跟进申请状态</p>
+            <p><span class="highlight">规划理由：</span>按时提交申请，确保申请材料完整</p>
+        </div>
+        
         <div style="margin-top: 20px;">
             <a href="index.html" style="color: #666; text-decoration: none;">返回首页</a>
         </div>
@@ -329,32 +739,52 @@
 
     <script>
         const tasks2024 = [
-            {id: 1, text: "托福首考", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting", category: "test"},
-            {id: 2, text: "AP课程学习", start_date: "2024-04-01", end_date: "2024-05-31", status: "waiting", category: "general"},
-            {id: 3, text: "AP考试", start_date: "2024-05-01", end_date: "2024-05-31", status: "waiting", category: "test"},
-            {id: 4, text: "暑期夏校申请", start_date: "2024-06-01", end_date: "2024-06-30", status: "waiting", category: "summer"},
-            {id: 5, text: "暑期夏校", start_date: "2024-07-01", end_date: "2024-08-31", status: "waiting", category: "summer"},
-            {id: 6, text: "托福二考", start_date: "2024-09-01", end_date: "2024-10-31", status: "waiting", category: "test"},
-            {id: 7, text: "课外活动规划", start_date: "2024-11-01", end_date: "2024-12-31", status: "waiting", category: "activity"}
+            {id: 1, text: "托福首考", start_date: "2024-01-01", end_date: "2024-03-31", status: "waiting", category: "test", 
+             description: "第一次托福考试，目标分数100+", difficulty: 4, importance: 5},
+            {id: 2, text: "AP课程学习", start_date: "2024-04-01", end_date: "2024-05-31", status: "waiting", category: "general",
+             description: "准备AP考试，选择2-3门课程", difficulty: 3, importance: 4},
+            {id: 3, text: "AP考试", start_date: "2024-05-01", end_date: "2024-05-31", status: "waiting", category: "test",
+             description: "参加AP考试，目标分数4-5分", difficulty: 4, importance: 4},
+            {id: 4, text: "暑期夏校申请", start_date: "2024-06-01", end_date: "2024-06-30", status: "waiting", category: "summer",
+             description: "申请暑期夏校项目，准备申请材料", difficulty: 3, importance: 4},
+            {id: 5, text: "暑期夏校", start_date: "2024-07-01", end_date: "2024-08-31", status: "waiting", category: "summer",
+             description: "参加暑期夏校，提升学术背景", difficulty: 3, importance: 4},
+            {id: 6, text: "托福二考", start_date: "2024-09-01", end_date: "2024-10-31", status: "waiting", category: "test",
+             description: "第二次托福考试，目标分数110+", difficulty: 4, importance: 5},
+            {id: 7, text: "课外活动规划", start_date: "2024-11-01", end_date: "2024-12-31", status: "waiting", category: "activity",
+             description: "规划并开始参与课外活动", difficulty: 2, importance: 3}
         ];
 
         const tasks2025 = [
-            {id: 1, text: "SAT首考", start_date: "2025-01-01", end_date: "2025-03-31", status: "waiting", category: "test"},
-            {id: 2, text: "AP课程学习", start_date: "2025-04-01", end_date: "2025-05-31", status: "waiting", category: "general"},
-            {id: 3, text: "AP考试", start_date: "2025-05-01", end_date: "2025-05-31", status: "waiting", category: "test"},
-            {id: 4, text: "暑期夏校申请", start_date: "2025-06-01", end_date: "2025-06-30", status: "waiting", category: "summer"},
-            {id: 5, text: "暑期夏校", start_date: "2025-07-01", end_date: "2025-08-31", status: "waiting", category: "summer"},
-            {id: 6, text: "SAT二考", start_date: "2025-09-01", end_date: "2025-10-31", status: "waiting", category: "test"},
-            {id: 7, text: "课外活动深化", start_date: "2025-11-01", end_date: "2025-12-31", status: "waiting", category: "activity"}
+            {id: 1, text: "SAT首考", start_date: "2025-01-01", end_date: "2025-03-31", status: "waiting", category: "test",
+             description: "第一次SAT考试，目标分数1400+", difficulty: 4, importance: 5},
+            {id: 2, text: "AP课程学习", start_date: "2025-04-01", end_date: "2025-05-31", status: "waiting", category: "general",
+             description: "准备AP考试，选择3-4门课程", difficulty: 3, importance: 4},
+            {id: 3, text: "AP考试", start_date: "2025-05-01", end_date: "2025-05-31", status: "waiting", category: "test",
+             description: "参加AP考试，目标分数4-5分", difficulty: 4, importance: 4},
+            {id: 4, text: "暑期夏校申请", start_date: "2025-06-01", end_date: "2025-06-30", status: "waiting", category: "summer",
+             description: "申请暑期夏校项目，准备申请材料", difficulty: 3, importance: 4},
+            {id: 5, text: "暑期夏校", start_date: "2025-07-01", end_date: "2025-08-31", status: "waiting", category: "summer",
+             description: "参加暑期夏校，提升学术背景", difficulty: 3, importance: 4},
+            {id: 6, text: "SAT二考", start_date: "2025-09-01", end_date: "2025-10-31", status: "waiting", category: "test",
+             description: "第二次SAT考试，目标分数1500+", difficulty: 4, importance: 5},
+            {id: 7, text: "课外活动深化", start_date: "2025-11-01", end_date: "2025-12-31", status: "waiting", category: "activity",
+             description: "深化课外活动，提升领导力", difficulty: 3, importance: 4}
         ];
 
         const tasks2026 = [
-            {id: 1, text: "托福三考", start_date: "2026-01-01", end_date: "2026-03-31", status: "waiting", category: "test"},
-            {id: 2, text: "AP课程学习", start_date: "2026-04-01", end_date: "2026-05-31", status: "waiting", category: "general"},
-            {id: 3, text: "AP考试", start_date: "2026-05-01", end_date: "2026-05-31", status: "waiting", category: "test"},
-            {id: 4, text: "大学申请准备", start_date: "2026-06-01", end_date: "2026-08-31", status: "waiting", category: "general"},
-            {id: 5, text: "文书写作", start_date: "2026-09-01", end_date: "2026-10-31", status: "waiting", category: "general"},
-            {id: 6, text: "提交申请", start_date: "2026-11-01", end_date: "2026-12-31", status: "waiting", category: "general"}
+            {id: 1, text: "托福三考", start_date: "2026-01-01", end_date: "2026-03-31", status: "waiting", category: "test",
+             description: "第三次托福考试，目标分数115+", difficulty: 4, importance: 5},
+            {id: 2, text: "AP课程学习", start_date: "2026-04-01", end_date: "2026-05-31", status: "waiting", category: "general",
+             description: "准备AP考试，选择3-4门课程", difficulty: 3, importance: 4},
+            {id: 3, text: "AP考试", start_date: "2026-05-01", end_date: "2026-05-31", status: "waiting", category: "test",
+             description: "参加AP考试，目标分数4-5分", difficulty: 4, importance: 4},
+            {id: 4, text: "大学申请准备", start_date: "2026-06-01", end_date: "2026-08-31", status: "waiting", category: "general",
+             description: "准备大学申请材料，选择目标学校", difficulty: 3, importance: 5},
+            {id: 5, text: "文书写作", start_date: "2026-09-01", end_date: "2026-10-31", status: "waiting", category: "general",
+             description: "撰写大学申请文书，修改完善", difficulty: 4, importance: 5},
+            {id: 6, text: "提交申请", start_date: "2026-11-01", end_date: "2026-12-31", status: "waiting", category: "general",
+             description: "提交大学申请，跟进申请状态", difficulty: 3, importance: 5}
         ];
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -517,6 +947,12 @@
                 <label for="endDate">结束时间</label>
                 <input type="date" id="endDate" value="${task.end_date}">
                 
+                <label for="description">描述</label>
+                <textarea id="description" rows="4" style="width: 100%; margin-bottom: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">${task.description || ''}</textarea>
+                
+                <label for="reason">规划理由</label>
+                <textarea id="reason" rows="4" style="width: 100%; margin-bottom: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">${task.reason || ''}</textarea>
+                
                 <div class="edit-panel-buttons">
                     <button class="delete" onclick="deleteTask(${task.id}, ${year})">删除</button>
                     <button class="cancel" onclick="closeEditPanel()">取消</button>
@@ -526,20 +962,132 @@
             
             document.body.appendChild(overlay);
             document.body.appendChild(panel);
+            
+            // 同时打开描述卡片编辑
+            editTaskDescriptionCard(task, year);
         }
-
+        
+        function editTaskDescriptionCard(task, year) {
+            // 查找对应的描述卡片
+            const cards = document.querySelectorAll('.task-description-card');
+            let targetCard = null;
+            
+            for (const card of cards) {
+                const cardTitle = card.querySelector('h2');
+                if (cardTitle && cardTitle.textContent === task.text) {
+                    targetCard = card;
+                    break;
+                }
+            }
+            
+            if (targetCard) {
+                // 高亮显示目标卡片
+                targetCard.style.border = '2px solid #4CAF50';
+                targetCard.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+                
+                // 滚动到目标卡片
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        function editTaskDescription(task, year, card) {
+            // 创建编辑面板
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            
+            const panel = document.createElement('div');
+            panel.className = 'edit-panel';
+            panel.style.width = '600px';
+            
+            // 获取当前卡片内容
+            const title = card.querySelector('h2').textContent;
+            const timeArrangement = card.querySelector('p:nth-child(2)').textContent.replace('时间安排：', '').trim();
+            const target = card.querySelector('p:nth-child(3)').textContent.replace('目标：', '').trim();
+            
+            // 获取建议内容
+            const suggestions = [];
+            let currentSuggestion = '';
+            const suggestionStartIndex = card.querySelector('p:nth-child(4)').textContent.includes('建议') ? 4 : 5;
+            
+            for (let i = suggestionStartIndex; i < suggestionStartIndex + 5; i++) {
+                const suggestionText = card.querySelector(`p:nth-child(${i})`).textContent;
+                if (suggestionText.startsWith('1.') || suggestionText.startsWith('2.') || 
+                    suggestionText.startsWith('3.') || suggestionText.startsWith('4.') || 
+                    suggestionText.startsWith('5.')) {
+                    suggestions.push(suggestionText.substring(2).trim());
+                }
+            }
+            
+            // 获取注意事项内容
+            const notes = [];
+            const notesStartIndex = suggestionStartIndex + 5;
+            
+            for (let i = notesStartIndex; i < notesStartIndex + 3; i++) {
+                const noteText = card.querySelector(`p:nth-child(${i})`).textContent;
+                if (noteText.startsWith('1.') || noteText.startsWith('2.') || noteText.startsWith('3.')) {
+                    notes.push(noteText.substring(2).trim());
+                }
+            }
+            
+            panel.innerHTML = `
+                <h2>编辑事项描述</h2>
+                <label for="descriptionTitle">事项名称</label>
+                <input type="text" id="descriptionTitle" value="${title}">
+                
+                <label for="timeArrangement">时间安排</label>
+                <input type="text" id="timeArrangement" value="${timeArrangement}">
+                
+                <label for="target">目标</label>
+                <input type="text" id="target" value="${target}">
+                
+                <label>建议</label>
+                <textarea id="suggestion1" rows="2" style="width: 100%; margin-bottom: 5px;">${suggestions[0] || ''}</textarea>
+                <textarea id="suggestion2" rows="2" style="width: 100%; margin-bottom: 5px;">${suggestions[1] || ''}</textarea>
+                <textarea id="suggestion3" rows="2" style="width: 100%; margin-bottom: 5px;">${suggestions[2] || ''}</textarea>
+                <textarea id="suggestion4" rows="2" style="width: 100%; margin-bottom: 5px;">${suggestions[3] || ''}</textarea>
+                <textarea id="suggestion5" rows="2" style="width: 100%; margin-bottom: 5px;">${suggestions[4] || ''}</textarea>
+                
+                <label>注意事项</label>
+                <textarea id="note1" rows="2" style="width: 100%; margin-bottom: 5px;">${notes[0] || ''}</textarea>
+                <textarea id="note2" rows="2" style="width: 100%; margin-bottom: 5px;">${notes[1] || ''}</textarea>
+                <textarea id="note3" rows="2" style="width: 100%; margin-bottom: 5px;">${notes[2] || ''}</textarea>
+                
+                <div class="edit-panel-buttons">
+                    <button class="cancel" onclick="closeDescriptionEditPanel()">取消</button>
+                    <button class="save" onclick="saveTaskDescription(${task.id}, ${year}, '${card.id}')">保存</button>
+                </div>
+            `;
+            
+            // 为卡片添加唯一ID
+            if (!card.id) {
+                card.id = `card-${task.id}-${year}`;
+            }
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(panel);
+        }
+        
+        function closeDescriptionEditPanel() {
+            const overlay = document.querySelector('.overlay');
+            const panel = document.querySelector('.edit-panel');
+            if (overlay) overlay.remove();
+            if (panel) panel.remove();
+        }
+        
         function closeEditPanel() {
             const overlay = document.querySelector('.overlay');
             const panel = document.querySelector('.edit-panel');
             if (overlay) overlay.remove();
             if (panel) panel.remove();
         }
-
+        
         function saveTaskChanges(taskId, year) {
             const taskName = document.getElementById('taskName').value;
             const taskCategory = document.getElementById('taskCategory').value;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
+            const description = document.getElementById('description').value;
+            const reason = document.getElementById('reason').value;
 
             if (!taskName || !startDate || !endDate) {
                 alert('请填写所有必填字段');
@@ -567,8 +1115,48 @@
                     text: taskName,
                     category: taskCategory,
                     start_date: startDate,
-                    end_date: endDate
+                    end_date: endDate,
+                    description: description,
+                    reason: reason
                 };
+            }
+
+            // 更新对应的描述卡片
+            const cardId = `card-${taskId}-${year}`;
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.querySelector('h2').textContent = taskName;
+                
+                // 格式化时间显示
+                const startMonth = new Date(startDate).getMonth() + 1;
+                const endMonth = new Date(endDate).getMonth() + 1;
+                const timeArrangement = `${startYear}年${startMonth}月至${endMonth}月`;
+                
+                card.querySelector('p:nth-child(2)').innerHTML = `<span class="highlight">时间安排：</span>${timeArrangement}`;
+                
+                // 更新描述和规划理由
+                let descriptionP = card.querySelector('p:nth-child(4)');
+                let reasonP = card.querySelector('p:nth-child(5)');
+                
+                if (!descriptionP || !descriptionP.querySelector('.highlight') || descriptionP.querySelector('.highlight').textContent !== '描述：') {
+                    descriptionP = document.createElement('p');
+                    descriptionP.innerHTML = `<span class="highlight">描述：</span>${description || ''}`;
+                    card.insertBefore(descriptionP, card.querySelector('p:nth-child(4)'));
+                } else {
+                    descriptionP.innerHTML = `<span class="highlight">描述：</span>${description || ''}`;
+                }
+                
+                if (!reasonP || !reasonP.querySelector('.highlight') || reasonP.querySelector('.highlight').textContent !== '规划理由：') {
+                    reasonP = document.createElement('p');
+                    reasonP.innerHTML = `<span class="highlight">规划理由：</span>${reason || ''}`;
+                    card.insertBefore(reasonP, descriptionP.nextSibling);
+                } else {
+                    reasonP.innerHTML = `<span class="highlight">规划理由：</span>${reason || ''}`;
+                }
+                
+                // 移除高亮边框
+                card.style.border = '';
+                card.style.boxShadow = '';
             }
 
             // 重新渲染所有甘特图
@@ -577,6 +1165,107 @@
             renderGantt(2026, tasks2026);
 
             closeEditPanel();
+        }
+        
+        function saveTaskDescription(taskId, year, cardId) {
+            const title = document.getElementById('descriptionTitle').value;
+            const timeArrangement = document.getElementById('timeArrangement').value;
+            const target = document.getElementById('target').value;
+            
+            const suggestions = [
+                document.getElementById('suggestion1').value,
+                document.getElementById('suggestion2').value,
+                document.getElementById('suggestion3').value,
+                document.getElementById('suggestion4').value,
+                document.getElementById('suggestion5').value
+            ];
+            
+            const notes = [
+                document.getElementById('note1').value,
+                document.getElementById('note2').value,
+                document.getElementById('note3').value
+            ];
+            
+            // 更新卡片内容
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.querySelector('h2').textContent = title;
+                card.querySelector('p:nth-child(2)').innerHTML = `<span class="highlight">时间安排：</span>${timeArrangement}`;
+                card.querySelector('p:nth-child(3)').innerHTML = `<span class="highlight">目标：</span>${target}`;
+                
+                // 更新描述和规划理由
+                let taskArray;
+                if (year === 2024) taskArray = tasks2024;
+                else if (year === 2025) taskArray = tasks2025;
+                else if (year === 2026) taskArray = tasks2026;
+                
+                const taskIndex = taskArray.findIndex(t => t.id === taskId);
+                if (taskIndex !== -1) {
+                    const task = taskArray[taskIndex];
+                    
+                    // 检查是否已有描述和规划理由段落，如果没有则添加
+                    let descriptionP = card.querySelector('p:nth-child(4)');
+                    let reasonP = card.querySelector('p:nth-child(5)');
+                    
+                    if (!descriptionP || !descriptionP.querySelector('.highlight') || descriptionP.querySelector('.highlight').textContent !== '描述：') {
+                        descriptionP = document.createElement('p');
+                        descriptionP.innerHTML = `<span class="highlight">描述：</span>${task.description || ''}`;
+                        card.insertBefore(descriptionP, card.querySelector('p:nth-child(4)'));
+                    } else {
+                        descriptionP.innerHTML = `<span class="highlight">描述：</span>${task.description || ''}`;
+                    }
+                    
+                    if (!reasonP || !reasonP.querySelector('.highlight') || reasonP.querySelector('.highlight').textContent !== '规划理由：') {
+                        reasonP = document.createElement('p');
+                        reasonP.innerHTML = `<span class="highlight">规划理由：</span>${task.reason || ''}`;
+                        card.insertBefore(reasonP, descriptionP.nextSibling);
+                    } else {
+                        reasonP.innerHTML = `<span class="highlight">规划理由：</span>${task.reason || ''}`;
+                    }
+                }
+                
+                // 更新建议
+                let suggestionIndex = 0;
+                for (let i = 6; i < 11; i++) {
+                    const suggestionP = card.querySelector(`p:nth-child(${i})`);
+                    if (suggestionP && suggestions[suggestionIndex]) {
+                        suggestionP.textContent = `${suggestionIndex + 1}. ${suggestions[suggestionIndex]}`;
+                        suggestionIndex++;
+                    }
+                }
+                
+                // 更新注意事项
+                let noteIndex = 0;
+                for (let i = 11; i < 14; i++) {
+                    const noteP = card.querySelector(`p:nth-child(${i})`);
+                    if (noteP && notes[noteIndex]) {
+                        noteP.textContent = `${noteIndex + 1}. ${notes[noteIndex]}`;
+                        noteIndex++;
+                    }
+                }
+                
+                // 移除高亮边框
+                card.style.border = '';
+                card.style.boxShadow = '';
+            }
+            
+            // 同时更新任务数据
+            let taskArray;
+            if (year === 2024) taskArray = tasks2024;
+            else if (year === 2025) taskArray = tasks2025;
+            else if (year === 2026) taskArray = tasks2026;
+            
+            const taskIndex = taskArray.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                taskArray[taskIndex].text = title;
+            }
+            
+            // 重新渲染甘特图
+            renderGantt(2024, tasks2024);
+            renderGantt(2025, tasks2025);
+            renderGantt(2026, tasks2026);
+            
+            closeDescriptionEditPanel();
         }
 
         function deleteTask(taskId, year) {
